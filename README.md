@@ -9,6 +9,8 @@ Welcome to the Ferro Alloy Management Application, a robust system designed to s
 
 **JWT Authentication:** Security is paramount, and our application employs JSON Web Token (JWT) authentication to safeguard user credentials and ensure secure access to sensitive data.
 
+**Token Refresh:** Every 15 minute token will refresh.
+
 **Hibernate ORM:** With Hibernate, managing database interactions becomes effortless. Our application seamlessly integrates with MySQL databases, providing efficient data retrieval and storage capabilities.
 
 **Thymeleaf Templating:** Front-end development is made simple and dynamic with Thymeleaf templating. This allows for the creation of elegant and responsive user interfaces, enhancing the user experience.
