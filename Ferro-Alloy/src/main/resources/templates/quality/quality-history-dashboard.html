@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Ferro Alloy</title>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--datatable-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+	<!-- <script src="https://rawgit.com/michaelbromley/angularUtils-pagination/master/dirPagination.js"></script> -->
+    <link href="dist/css/style.css" rel="stylesheet" type="stylesheet" />
+
+    <!--font-awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!---search select dropeown list--->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="themify-icons/themify-icons.css" rel="stylesheet" type="text/css" />
+    <link href="dist/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!---search select dropeown list end--->
+    
+    <!-- Angularjs  -->
+    <script th:replace="fragments :: angularJsCommonFile"></script>
+	<!-- Controllers And services -->
+	<script th:src="@{/angular/controllers/app.js}" ></script>
+		  <script th:src="@{/angular/services/authInterceptorService.js}" ></script>
+	<script th:src="@{/angular/services/authService.js}" ></script>  
+	 <script th:src="@{/angular/controllers/qualityHistoryController.js}" ></script>
+	 <script th:src="@{/angular/services/qualityHistoryService.js}" ></script>   
+  
+    
+
+</head>
+
+
+
+<body ng-app="app" ng-controller="qualityHistoryController"   ng-init="init(); " th:attr="data-qualitypkid=${qualitypkid}">
+    <nav class="navbar navbar-light bg-light shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand"><img th:src="@{/angular/img/j-panther-logo.png}" width="100px;"></a>
+            <form class="d-flex">
+                <a ng-click="logout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</a>
+            </form>
+        </div>
+    </nav>
+    <!--navbar end-->
+    <section class="bg-dark">
+        <div class="container-fluid bg-primar py-3 text-white" style="height: 50px; background-image: url('img/6928.jpg'); background-size: cover;
+        position: relative; background-repeat: no-repeat; background-position: top;">
+            <h5>Quality</h5>
+        </div>
+
+        <!--sub-banner-->
+        <div class="container-fluid py-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content px-3 border bg-light" id="nav-tabContent">
+                        <div class="tab-pane fade active show" id="nav-quality" role="tabpanel"
+                            aria-labelledby="nav-home-tab">
+                         <!--     <div class="box-body row bg-dark pt-3">
+                                <div class="col-md-2">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select Product Group}</option>
+                                            <option>Slab</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select External Grade</option>
+                                            <option>Rock Hard 450</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select Internal Grade</option>
+                                            <option>JARH45XLO1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"><input type="month" id="start" name="start" min="2018-03"
+                                    value="2018-05">
+                                </div>
+                                <div class="col-md-2"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                                    aria-hidden="true"></i> Search</span></a>
+                                 </div>
+                            </div> -->
+
+                            <!--table-->
+                            <div class="d-flex bd-highlight bg-info my-3 p-2">
+                                <div class="flex-grow-1 bd-highlight pt-2 text-white">
+                                    <h5>Chemical Composition History</h5>
+                                
+                                    
+                                </div>
+                              </div>
+
+                            <div class="table-responsive">                                
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                          <th colspan="30" class ="text-center" >Material</th>
+                                        </tr>
+                                        <tr>
+                                        <th colspan="15" class ="text-center" >Min</th>
+                                        <th colspan="15" class ="text-center">Max</th>
+                                        </tr>
+                                           <tr>
+                                             <th>C </th>  
+                                            <th>Mn </th> 
+                                            <th>Si </th> 
+                                            <th>Cr </th>
+                                            <th>V </th>
+                                            <th>Nb </th>
+                                            <th>Ni </th>
+                                            <th>Mo </th>
+                                            <th>Cu </th>
+                                            <th>Ti </th>
+                                            <th>Ca </th>
+                                            <th>Al </th>
+                                            <th>B </th>
+                                            <th>P </th>
+                                            <th>N </th>
+                                          
+                                       
+                                        
+                                            <th>C </th>  
+                                            <th>Mn  </th> 
+                                            <th>Si </th> 
+                                            <th>Cr </th>
+                                            <th>V </th>
+                                            <th>Nb </th>
+                                            <th>Ni </th>
+                                            <th>Mo </th>
+                                            <th>Cu </th>
+                                            <th>Ti </th>
+                                            <th>Ca </th>
+                                            <th>Al </th>
+                                            <th>B </th>
+                                            <th>P </th>
+                                            <th>N </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr ng-repeat="i in qualityHistory">
+                                                 
+                                             <td>{{i.compositionList[0].min}}</td>  
+                                            <td>{{i.compositionList[1].min}}</td> 
+                                            <td>{{i.compositionList[2].min}}</td> 
+                                            <td>{{i.compositionList[3].min}}</td>
+                                            <td>{{i.compositionList[4].min}}</td>
+                                            <td>{{i.compositionList[5].min}}</td>
+                                            <td>{{i.compositionList[6].min}}</td>
+                                            <td>{{i.compositionList[7].min}}</td>
+                                            <td>{{i.compositionList[8].min}}</td>
+                                            <td>{{i.compositionList[9].min}}</td>
+                                            <td>{{i.compositionList[10].min}}</td>
+                                            <td>{{i.compositionList[11].min}}</td>
+                                            <td>{{i.compositionList[12].min}}</td>
+                                            <td>{{i.compositionList[13].min}}</td>
+                                            <td>{{i.compositionList[14].min}}</td>
+                                          
+                                       
+                                        
+                                            <td>{{i.compositionList[0].max}}</td>  
+                                            <td>{{i.compositionList[1].max}}</td> 
+                                            <td>{{i.compositionList[2].max}}</td> 
+                                            <td>{{i.compositionList[3].max}}</td>
+                                            <td>{{i.compositionList[4].max}}</td>
+                                            <td>{{i.compositionList[5].max}}</td>
+                                            <td>{{i.compositionList[6].max}}</td>
+                                            <td>{{i.compositionList[7].max}}</td>
+                                            <td>{{i.compositionList[8].max}}</td>
+                                            <td>{{i.compositionList[9].max}}</td>
+                                            <td>{{i.compositionList[10].max}}</td>
+                                            <td>{{i.compositionList[11].max}}</td>
+                                            <td>{{i.compositionList[12].max}}</td>
+                                            <td>{{i.compositionList[13].max}}</td>
+                                            <td>{{i.compositionList[14].max}}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--table colsed-->
+
+                        <div class="flex-grow-1 bd-highlight py-2 text-white d-flex justify-content-end gap-2">
+                            <a href="/Ferro-Alloy/quality"><button type="button" class="btn btn-dark"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back</button></a>
+                            <a th:href="@{/export-to-excel/{qualitypkid}(qualitypkid=${qualitypkid})}"><button type="button"  class="btn btn-danger">Download Excel <i class="fa fa-file-excel-o" aria-hidden="true"></i></button></a>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!---footer-->
+        <footer>
+            <div class="container-fluid mt-4" style="background-color: #fc9e2f">
+                <div class="container">
+                    <div class="row text-dark text-center">
+                        <span class="align-middle py-2">© Jindal Steel & Power Limited</span>
+                    </div>
+                </div>
+        </footer>
+    </section>
+
+<!--new create modal-->
+<div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">New create</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Product Group</option>
+                                    <option>Slab</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select External Grade</option>
+                                    <option>Rock Hard 450-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Internal Grade</option>
+                                    <option>JARH45XLO1</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                           aria-hidden="true"></i> Search</span></a>
+                        </div> -->
+                    <div class="table-responsive py-2">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <thead class="header">
+                                    <th colspan="11">Chemical Composition</th>
+                                </thead>
+                            </tr>
+                            <tr>
+                                <th>Material</th>
+                                <th>Min</th>
+                                <th>Item Code</th>
+                                <th>Actual</th>
+                                <th>Max</th>
+                                <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center" style="padding: 0px;">C</td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Si</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cr</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ni</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mo</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ti</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">C Eq</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>
+                                
+                <div class="form-group">
+                  <label>Remarks</label>
+                  <textarea class="form-control" id="remarks" name="remarks" rows="2" placeholder="Describe What You Have Done Today..."></textarea>
+                </div>                 
+                <button type="submit" class="btn btn-primary save-btn">Save as Draft</button> 
+                <button type="submit" class="btn btn-success save-btn">Submit</button>                       
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--edit modal-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">New</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Product Group</option>
+                                    <option>Slab</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select External Grade</option>
+                                    <option>Rock Hard 450-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Internal Grade</option>
+                                    <option>JARH45XLO1</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                           aria-hidden="true"></i> Search</span></a>
+                        </div> -->
+                    <div class="table-responsive py-2">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <thead class="header">
+                                    <th colspan="11">Chemical Composition</th>
+                                </thead>
+                            </tr>
+                            <tr>
+                                <th>Material</th>
+                                <th>Min</th>
+                                <th>Item Code</th>
+                                <th>Actual</th>
+                                <th>Max</th>
+                                <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center" style="padding: 0px;">C</td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Si</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cr</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ni</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mo</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ti</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">C Eq</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>
+                                
+                <div class="form-group">
+                  <label>Remarks</label>
+                  <textarea class="form-control" id="remarks" name="remarks" rows="2" placeholder="Describe What You Have Done Today..."></textarea>
+                </div>                 
+                <button type="submit" class="btn btn-success save-btn">Save & Upadate</button>                      
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--view- modal-->
+
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Chemical Composition</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                            <tr>
+                                <th class="text-center">Material</th>
+                                <th>Min</th>
+                                <th>Item Code</th>
+                                <th>Actual</th>
+                                <th>Max</th>
+                                <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center">C</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Si</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cr</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ni</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mo</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ti</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">C Eq</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>            
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-dark ml-2">Download Excel <i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                </div>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+    <!---login script-->
+    <!---search select dropeown list--js-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <!---search select dropeown list--js-->
+    <script>
+        $('.selectpicker').selectpicker({
+            style: 'btn-1'
+        });
+    </script>
+    <!---end js--->
+</body>
+
+</html>

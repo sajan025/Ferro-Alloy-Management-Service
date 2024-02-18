@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Ferro Alloy</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--datatable-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+
+    <link href="dist/css/style.css" rel="stylesheet" type="stylesheet" />
+
+    <!--font-awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!---search select dropeown list--->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="themify-icons/themify-icons.css" rel="stylesheet" type="text/css" />
+    <link href="dist/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!---search select dropeown list end--->
+    <!-- Angularjs  -->
+    <script th:replace="fragments :: angularJsCommonFile"></script>
+	<!-- Controllers And services -->
+	<script th:src="@{/angular/controllers/app.js}" ></script>
+		  <script th:src="@{/angular/services/authInterceptorService.js}" ></script>
+	<script th:src="@{/angular/services/authService.js}" ></script>  
+   
+	<script th:src="@{/angular/controllers/smsHistoryController.js}" ></script>
+	 <script th:src="@{/angular/services/smsService.js}" ></script>  	 
+    
+
+</head>
+
+<body ng-app="app" ng-controller="smsHistoryController" ng-init="init()" th:attr="data-qualitypkid=${qualitypkid}">
+    <nav class="navbar navbar-light bg-light shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand"><img th:src="@{/angular/img/Jindal-logo.png}" width="100px;"></a>
+            <form class="d-flex">
+                <a  ng-click="logout()" href=""><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</a>
+            </form>
+        </div>
+    </nav>
+    <!--navbar end-->
+    <section class="bg-dark">
+        <div class="container-fluid bg-primar py-3 text-white" style="height: 50px; background-image: url('img/6928.jpg'); background-size: cover;
+        position: relative; background-repeat: no-repeat; background-position: top;">
+            <h5>SMS</h5>
+        </div>
+
+        <!--sub-banner-->
+        <div class="container-fluid py-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content px-3 border bg-light" id="nav-tabContent">
+                        <div class="tab-pane fade active show" id="nav-quality" role="tabpanel"
+                            aria-labelledby="nav-home-tab">
+                            <!-- <div class="box-body row bg-dark pt-3">
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select Product Group</option>
+                                            <option>Slab</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select External Grade</option>
+                                            <option>Rock Hard 450</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select Internal Grade</option>
+                                            <option>JARH45XLO1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                                   aria-hidden="true"></i> Search</span></a>
+                                </div>
+                            </div> -->
+
+                            <!--table-->
+                            <div class="d-flex bd-highlight bg-info my-3 p-2">
+                                <div class="flex-grow-1 bd-highlight pt-2 text-white">
+                                    <h5>SMS Entry History</h5>
+                                </div>
+                              </div>
+
+                            <div class="table-responsive">                                
+                                <table class="table table-bordered">
+                                    <thead class="bg-info">
+                                        <tr>
+                                            <th style="width: 300px;">Sr.No.</th>
+                                            <!-- <th>Product Group</th>
+                                            <th>External Grade</th>
+                                            <th>Internal Grade</th> -->
+                                            <th>Segment</th>
+                                            <th>Sub Segment</th>
+                                            <th>Process Route</th>
+                                            <th>Coke, Petroleum Calcined, 25KG Pack</th>
+                                            <th>Graphite Fines</th>
+                                            <th>Silico Manganese, HP, 20-60MM</th>
+                                            <th>Silico Manganes, Extra Low C, 10-55MM</th>
+                                            <th>Silico Manganese, Low Phos</th>
+                                            <th>Manganese Metal Briqutes</th>
+                                            <th>Ferro Manganese, HC</th>
+                                            <th>Ferro Manganses, LC</th>
+                                            <th>Ferro Silicon</th>
+                                            <th>Aluminium Dross</th>
+                                            <th>Ingot, AL, Purity: 99.5%</th>
+                                            <th>Wire, AL, DIA:12-13MM</th>
+                                            <th>Wire, 16MM,CA-SI</th>
+                                            <th>Ca Wire, Pure</th>
+                                            <th>Copper Cathode, CU Content, 97-99% Pure</th>
+                                            <th>Nickel Metal</th>
+                                            <th>Ferro Chrome,LC</th>
+                                            <th>Ferro Chrome, CR: 60T065%</th>
+                                            <th>Ferro Niobium</th>
+                                            <th>Wire, FE-TI Cored, 13MM, TI 65% Min</th>
+                                            <th>Ferro Vanadium</th>
+                                            <th>Nitrovan</th>
+                                            <th>Ferro Molybdenum</th>
+                                            <th>Ferro Boron</th>
+                                            <th>Shots Aluminium</th>
+                                            <th>Ferro Aluminium</th>
+                                            <th>Ferro Phosphorous</th>
+                                            <th>Ferro TITANIUM</th>
+                                            <th>SYN Slag Pre Melted</th>
+                                            <th>Slag Fluidiser</th>
+                                            <th>Wire 13MM,CA-FE</th>
+                                            <th>AL Cubes</th>
+                                            <th>Calcined Lime</th>
+                                            <th>Manganese Core Wire, Nitrided, 13MM</th>
+                                            <th>Total Alloy Cost per Ton</th>
+                                            <!-- <th>Quality Remark</th> -->
+                                            <th> SMS Remark</th>
+                                        </tr>
+                                    </thead>
+            
+                                    <tbody>
+                                        <tr ng-repeat="d in smsData">
+                                                   <td>{{$index+1}}</td>
+                                                    <!-- <td>{{smsProduct}}</td>
+				                                    <td>{{smsGrade}}</td>
+				                                    <td>{{smsInternalGrade}}</td> -->
+				                                    <td>{{d.segment}}</td>
+				                                    <td>{{d.subSegment}}</td>
+				                                    <td>{{d.processRoute}}</td>
+				                                    <td>{{d.cokePetroleumCalcined}}</td>
+				                                    <td>{{d.graphiteFines}}</td>
+				                                    <td>{{d.silicoManganeseHP}}</td>
+				                                    <td>{{d.silicoManganesExtraLowC}}</td>
+				                                    <td>{{d.silicoManganeseLowPhos}}</td>
+				                                    <td>{{d.manganeseMetalBriqutes}}</td>
+				                                    <td>{{d.ferroManganeseHC}}</td>
+				                                    <td>{{d.ferroMangansesLC}}</td>
+				                                    <td>{{d.ferroSilicon}}</td>
+				                                    <td>{{d.aluminiumDross}}</td>
+				                                    <td>{{d.ingotAL}}</td>
+				                                    <td>{{d.wireAL}}</td>
+				                                    <td>{{d.wire16MM}}</td>
+				                                    <td>{{d.caWirePure}}</td>
+				                                    <td>{{d.copperCathode}}</td>
+				                                    <td>{{d.nickelMetal}}</td>
+				                                    <td>{{d.ferroChromeLC}}</td>
+				                                    <td>{{d.ferroChromeCR}}</td>
+				                                    <td>{{d.ferroNiobium}}</td>
+				                                    <td>{{d.wireFETICored}}</td>
+				                                    <td>{{d.ferroVanadium}}</td>
+				                                    <td>{{d.nitrovan}}</td>
+				                                    <td>{{d.ferroMolybdenum}}</td>
+				                                    <td>{{d.ferroBoron}}</td>
+				                                    <td>{{d.shotsAluminium}}</td>
+				                                    <td>{{d.ferroAluminium}}</td>
+				                                    <td>{{d.ferroPhosphorous}}</td>
+				                                    <td>{{d.ferroTitaninum}}</td>
+				                                    <td>{{d.synSlagPreMelted}}</td>
+				                                    <td>{{d.slagFluidiser}}</td>
+				                                    <td>{{d.wire13MM}}</td>
+				                                    <td>{{d.alCubes}}</td>
+				                                    <td>{{d.calcinedLime}}</td>
+				                                    <td>{{d.manganeseCoreWire}}</td>
+				                                    <td>{{d.totalAlloyCostPerTon}}</td>
+				                                    <!-- <td></td> -->
+				                                    <td style="width: 200px;">{{d.smsRemark}}</td>
+                                        </tr>
+                                        
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!--table colsed-->
+
+                        <div class="flex-grow-1 bd-highlight py-2 text-white d-flex justify-content-end gap-2">
+                            <a href="/Ferro-Alloy/sms"><button type="button" class="btn btn-dark"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Back</button></a>
+                            <!-- <a href="quality-history.html"><button type="button" class="btn btn-danger">Download Excel <i class="fa fa-file-excel-o" aria-hidden="true"></i></button></a> -->
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!---footer-->
+        <footer>
+            <div class="container-fluid mt-4" style="background-color: #fc9e2f">
+                <div class="container">
+                    <div class="row text-dark text-center">
+                        <span class="align-middle py-2">© Jindal Steel & Power Limited</span>
+                    </div>
+                </div>
+        </footer>
+    </section>
+
+<!--new create modal-->
+<div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">New create</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Product Group</option>
+                                    <option>Slab</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select External Grade</option>
+                                    <option>Rock Hard 450-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Internal Grade</option>
+                                    <option>JARH45XLO1</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                           aria-hidden="true"></i> Search</span></a>
+                        </div> -->
+                    <div class="table-responsive py-2">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <thead class="header">
+                                    <th colspan="11">Chemical Composition</th>
+                                </thead>
+                            </tr>
+                            <tr>
+                                <th>Material</th>
+                                <th>Min</th>
+                                <th>Item Code</th>
+                                <th>Actual</th>
+                                <th>Max</th>
+                                <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center" style="padding: 0px;">C</td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Si</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cr</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ni</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mo</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ti</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">C Eq</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>
+                                
+                <div class="form-group">
+                  <label>Remarks</label>
+                  <textarea class="form-control" id="remarks" name="remarks" rows="2" placeholder="Describe What You Have Done Today..."></textarea>
+                </div>                 
+                <button type="submit" class="btn btn-primary save-btn">Save as Draft</button> 
+                <button type="submit" class="btn btn-success save-btn">Submit</button>                       
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--edit modal-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">New</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Product Group</option>
+                                    <option>Slab</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select External Grade</option>
+                                    <option>Rock Hard 450-</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <select class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Internal Grade</option>
+                                    <option>JARH45XLO1</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                           aria-hidden="true"></i> Search</span></a>
+                        </div> -->
+                    <div class="table-responsive py-2">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <thead class="header">
+                                    <th colspan="11">Chemical Composition</th>
+                                </thead>
+                            </tr>
+                            <tr>
+                                <th>Material</th>
+                                <th>Min</th>
+                                <th>Item Code</th>
+                                <th>Actual</th>
+                                <th>Max</th>
+                                <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center" style="padding: 0px;">C</td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td style="width: 100px;"><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Si</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cr</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ni</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mo</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ti</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">C Eq</td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input type="number" class="form-control"></td>
+                                <td><input class="form-control" id="#" value=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>
+                                
+                <div class="form-group">
+                  <label>Remarks</label>
+                  <textarea class="form-control" id="remarks" name="remarks" rows="2" placeholder="Describe What You Have Done Today..."></textarea>
+                </div>                 
+                <button type="submit" class="btn btn-success save-btn">Save & Upadate</button>                      
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--view- modal-->
+
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Chemical Composition</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                            <tr>
+                                <th class="text-center">Material</th>
+                                <th>Min</th>
+                                <th>Item Code</th>
+                                <th>Actual</th>
+                                <th>Max</th>
+                                <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center">C</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Si</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cr</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ni</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mo</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ti</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">P</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">C Eq</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>            
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-dark ml-2">Download Excel <i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                </div>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+    <!---login script-->
+    <!---search select dropeown list--js-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <!---search select dropeown list--js-->
+    <script>
+        $('.selectpicker').selectpicker({
+            style: 'btn-1'
+        });
+    </script>
+    <!---end js--->
+</body>
+
+</html>

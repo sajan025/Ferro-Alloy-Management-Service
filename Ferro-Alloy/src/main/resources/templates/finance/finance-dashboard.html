@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Ferro Alloy</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!--datatable-->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+<script
+	src="https://unpkg.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
+<link rel="stylesheet"
+	href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
+
+<link href="dist/css/style.css" rel="stylesheet" type="stylesheet" />
+
+<!--font-awesome-->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!---search select dropeown list--->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<link href="themify-icons/themify-icons.css" rel="stylesheet"
+	type="text/css" />
+<link href="dist/css/style.css" rel="stylesheet" type="text/css" />
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<!---search select dropeown list end--->
+<script th:replace="fragments :: angularJsCommonFile"></script>
+<!-- Controllers And services -->
+<script th:src="@{/angular/controllers/app.js}"></script>
+<script th:src="@{/angular/services/authInterceptorService.js}"></script>
+<script th:src="@{/angular/services/authService.js}"></script>
+<script th:src="@{/angular/controllers/financeController.js}"></script>
+<script th:src="@{/angular/services/financeService.js}"></script>
+
+
+
+</head>
+
+<body ng-app="app" ng-controller="financeController" ng-init="init()">
+	<nav class="navbar navbar-light bg-light shadow-sm">
+		<div class="container-fluid">
+			<a class="navbar-brand"><img
+				th:src="@{/angular/img/Jindal-logo.png}" width="100px;"></a>
+			<form class="d-flex">
+				<a ng-click="logout()" href=""><i class="fa fa-sign-out"
+					aria-hidden="true"></i> Sign out</a>
+			</form>
+		</div>
+	</nav>
+	<!--navbar end-->
+	<section class="bg-dark">
+		<div class="container-fluid bg-primar py-3 text-white"
+			style="height: 60px; background-image: url('img/6928.jpg'); background-size: cover; position: relative; background-repeat: no-repeat; background-position: top;">
+			<h4>Finance Details</h4>
+		</div>
+
+		<!--sub-banner-->
+		<div class="container-fluid py-4">
+			<div class="card">
+				<div class="card-body">
+					<nav>
+						<div class="nav nav-tabs mb-3" id="nav-tab" role="tablist">
+							<button class="nav-link active" ng-click="getQualityList()" id="nav-quality-tab"
+								data-bs-toggle="tab" data-bs-target="#nav-quality" type="button"
+								role="tab" aria-controls="nav-quality" aria-selected="true">Finance</button>
+							<button class="nav-link" id="nav-sms-tab" data-bs-toggle="tab"
+								data-bs-target="#nav-sms" type="button" role="tab"
+								aria-controls="nav-sms" ng-click="getQualityList()" aria-selected="false">Costing</button>
+						</div>
+					</nav>
+
+					<div class="tab-content px-3 border bg-light" id="nav-tabContent">
+						<div class="tab-pane fade active show" id="nav-quality"
+							role="tabpanel" aria-labelledby="nav-home-tab">
+							<div class="box-body row bg-dark pt-3">
+								<div class="col-md-3">
+
+									<div class="form-group search_select_box">
+										<input type="text" ng-model="productName"
+											placeholder="Product" class="form-control selectpicker"
+											data-live-search="true" />
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group search_select_box">
+										<input type="text" ng-model="gradeName" placeholder="Grade"
+											class="form-control selectpicker" data-live-search="true" />
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group search_select_box">
+										<input type="text" ng-model="internalGradename"
+											placeholder="Internal grade"
+											class="form-control selectpicker" data-live-search="true" />
+									</div>
+								</div>
+								<div class="col-md-3">
+									<a
+										ng-click="getQualityList(1,null,productName,gradeName,internalGradename)"><span
+										class="btn btn-primary"><i class="fa fa-search"
+											aria-hidden="true"></i> Search</span></a>
+								</div>
+							</div>
+
+							<!--table-->
+							<div class="d-flex justify-content-end bg-info my-2">
+								<div class="px-2 p-2">
+									<h4 class="text-white">Finance</h4>
+								</div>
+
+								<div class="ml-auto p-2">
+									<!-- <a href="financeHistory"><button type="button" class="btn btn-dark">History <i
+                                                class="fa fa-history" aria-hidden="true"></i></button></a> -->
+								</div>
+							</div>
+
+							<div class="table-responsive">
+								<table class="table table-bordered bg-white">
+									<thead class="bg-light">
+										<tr>
+											<th>Sr.No.</th>
+											<th>Products Name</th>
+											<th>External Grade</th>
+											<th>Internal Grade</th>
+											<th>Remarks</th>
+											<th>Status</th>
+											<th class="text-center">Action</th>
+										</tr>
+									</thead>
+
+									<tbody>
+
+										<tr dir-paginate="qr in qualityRequest | itemsPerPage: 4 "
+											total-items="totalPages" current-page="currentPage"
+											ng-init="pindex=$index" pagination-id="productPagination">
+											<td>{{ ($index + 1) + (currentPage - 1) * 4}}</td>
+
+
+											<td>{{qr.product}}</td>
+											<td>{{qr.externalGrade}}</td>
+											<td>{{qr.internalGrade}}</td>
+											<td
+												style="word-wrap: break-word; min-width: 160px; max-width: 160px;">{{qr.remarks}}</td>
+											<td>{{qr.status}}</td>
+											<td style="width: 140px;">
+												<div class="ms-auto text-center">
+													<a
+														class="btn btn-link text-dark text-gradient px-2 py-0 mb-0"
+														ng-click="getfinancedata(qr.id); setQualityId(qr.id)" href="#"
+														data-toggle="modal" data-target="#financeEditModal"
+														style="border: 1px solid;"><i
+														class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></i></a>
+													<a class="btn btn-link text-primary px-2 py-0 mb-0"
+														ng-click="getfinanceViewdata(qr.id);" href="#"
+														style="border: 1px solid;" data-toggle="modal"
+														data-target="#viewModal"><i class="fa fa-eye fa-1x"
+														aria-hidden="true"></i></a> <a
+														href="/Ferro-Alloy/financeHistory/{{qr.id}}"><button
+															type="button" class="btn btn-dark">
+															History <i class="fa fa-history" aria-hidden="true"></i>
+														</button></a>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<dir-pagination-controls
+									on-page-change="getProductList(newPageNumber)"
+									direction-links="true" boundary-links="true"
+									pagination-id="productPagination"></dir-pagination-controls>
+
+							</div>
+						</div>
+
+						<!--sms-->
+						<div class="tab-pane fade" id="nav-sms" role="tabpanel"
+							aria-labelledby="nav-sms-tab">
+							<div class="tab-pane fade active show" id="nav-quality"
+								role="tabpanel" aria-labelledby="nav-home-tab">
+								<div class="box-body row bg-dark pt-3">
+									<div class="col-md-3">
+										<div class="form-group search_select_box">
+											<input type="text" ng-model="productName"
+												placeholder="Product" class="form-control selectpicker"
+												data-live-search="true" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group search_select_box">
+											<input type="text" ng-model="gradeName" placeholder="Grade"
+												class="form-control selectpicker" data-live-search="true" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group search_select_box">
+											<input type="text" ng-model="internalGradename"
+												placeholder="Internal grade"
+												class="form-control selectpicker" data-live-search="true" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<a
+											ng-click="getQualityList(1,null,productName,gradeName,internalGradename)"><span
+											class="btn btn-primary"><i class="fa fa-search"
+												aria-hidden="true"></i> Search</span></a>
+									</div>
+								</div>
+
+								<!--table-->
+								<div class="table-responsive py-4">
+									<div class="d-flex justify-content-end bg-info my-2">
+										<div class="px-2 p-2">
+											<h4 class="text-white">Ferro Alloy Rates</h4>
+										</div>
+
+										<div class="ml-auto p-2">
+											<!-- <a href="costingHistory"><button type="button"
+                                                    class="btn btn-dark">History <i class="fa fa-history"
+                                                        aria-hidden="true"></i></button></a> -->
+
+										</div>
+
+									</div>
+
+									<div class="table-responsive">
+										<table class="table table-bordered bg-white">
+											<thead class="bg-light">
+												<tr>
+													<th>Sr.No.</th>
+													<th>Products Name</th>
+													<th>External Grade</th>
+													<th>Internal Grade</th>
+													<th>Remarks</th>
+													<th>Status</th>
+													<th class="text-center">Action</th>
+												</tr>
+											</thead>
+
+											<tbody>
+											<tbody>
+												<tr dir-paginate="d in qualityRequest | itemsPerPage: 4 "
+													total-items="totalPages" current-page="currentPage"
+													ng-init="pindex=$index" pagination-id="productPagination">
+													<td>{{ ($index + 1) + (currentPage - 1) * 4}}</td>
+													<td>{{d.product}}</td>
+													<td>{{d.externalGrade}}</td>
+													<td>{{d.internalGrade}}</td>
+													<td
+														style="word-wrap: break-word; min-width: 160px; max-width: 160px;">{{d.remarks}}</td>
+													<td>{{d.status}}</td>
+													<td style="width: 140px;">
+														<div class="ms-auto text-center">
+															<a
+																class="btn btn-link text-dark text-gradient px-2 py-0 mb-0"
+																href="#" data-toggle="modal" ng-click="setQualityId(d.id)" data-target="#purEditModal"
+																style="border: 1px solid;"><i
+																class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></i></a>
+															<a class="btn btn-link text-primary px-2 py-0 mb-0"
+																href="#" style="border: 1px solid;" ng-click="setQualityId(d.id)" data-toggle="modal"
+																data-target="#purviewModal"><i
+																class="fa fa-eye fa-1x" aria-hidden="true"></i></a> <a
+																href="/Ferro-Alloy/costingHistory/{{d.id}}"><button type="button"
+																	class="btn btn-dark">
+																	History <i class="fa fa-history" aria-hidden="true"></i>
+																</button></a>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<dir-pagination-controls
+											on-page-change="getQualityList(newPageNumber)"
+											direction-links="true" boundary-links="true"
+											pagination-id="productPagination"></dir-pagination-controls>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!--finance-->
+						<div class="tab-pane fade" id="nav-finance" role="tabpanel"
+							aria-labelledby="nav-finance-tab">
+							<div class="box-body row bg-dark pt-3">
+								<div class="col-md-3">
+									<div class="col-md-3">
+										<div class="form-group search_select_box">
+											<input type="text" ng-model="productName"
+												placeholder="Product" class="form-control selectpicker"
+												data-live-search="true" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group search_select_box">
+											<input type="text" ng-model="gradeName" placeholder="Grade"
+												class="form-control selectpicker" data-live-search="true" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group search_select_box">
+											<input type="text" ng-model="internalGradename"
+												placeholder="Internal grade"
+												class="form-control selectpicker" data-live-search="true" />
+										</div>
+									</div>
+									<div class="col-md-3">
+										<a
+											ng-click="getQualityList(1,null,productName,gradeName,internalGradename)"><span
+											class="btn btn-primary"><i class="fa fa-search"
+												aria-hidden="true"></i> Search</span></a>
+									</div>
+								</div>
+
+								<!---table finance-->
+								<div class="table-responsive py-2">
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+										<thead class="header">
+											<th colspan="11">SMS/MILLS</th>
+										</thead>
+										</tr>
+										<tr>
+											<th>Alloy Extra/Base Grade</th>
+											<th>QC Rejection Impact %</th>
+											<th>QC Rejection Impact Rs.</th>
+											<th>SMS Process Extra</th>
+											<th>Plate Mill Yield Impact (Rs)</th>
+											<th>Plate Mill NCO %</th>
+											<th>Plate Mill NCO Impact (Rs)</th>
+											<th>Plate Mill Rejection %</th>
+											<th>Plate Mill Rejection Impact (Rs)</th>
+											<th>Process Charges other than Base Grade (Rs)</th>
+											<th>Total Revised Cost</th>
+
+										</tr>
+										</thead>
+
+										<tbody>
+											<tr>
+												<td>616</td>
+												<td>0.5%</td>
+												<td>36</td>
+												<td>0.00</td>
+												<td>56.6</td>
+												<td>1.53%</td>
+												<td>131.82</td>
+												<td>0.3%</td>
+												<td>25.85</td>
+												<td>0.00</td>
+												<td>866</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+
+								<!---cost of ferro table-->
+								<div class="col-md-12 pull-right"
+									style="text-align: right; background-color: #cee9f1;">
+									<input type="month" id="start" name="start" min="2018-03"
+										value="2018-05">
+								</div>
+								<!--search by month end-->
+								<div class="table-responsive py-2">
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+										<thead class="header">
+											<th colspan="11">Cost of Ferro Alloy</th>
+										</thead>
+										</tr>
+										<tr>
+											<th>Sr.No.</th>
+											<th>Date</th>
+											<th>Item Code</th>
+											<th>Description</th>
+											<th>Rates as on 01Jan'23</th>
+											<th>Base Rates as on 01 Jan'23</th>
+											<th>Rates as on 01 Jan'23 LCNC BASIS</th>
+											<th>SAP rate as on 01 Jan'23</th>
+											<th class="text-center">Action</th>
+
+										</tr>
+										</thead>
+
+										<tbody>
+											<tr>
+												<td>1</td>
+												<td>6/21/2023</td>
+												<td>2000000001</td>
+												<td>Manganese Metal Briqutes</td>
+												<td>2,17,665</td>
+												<td>2,13,397</td>
+												<td>2,11,300</td>
+												<td>2,13,397</td>
+												<td style="width: 140px;">
+													<div class="ms-auto text-center">
+														<a
+															class="btn btn-link text-dark text-gradient px-2 py-2 mb-0"
+															href="#" data-toggle="modal" data-target="#editModal"
+															style="border: 1px solid;"><i
+															class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></i></a>
+														<a class="btn btn-link text-primary px-2 py-2 mb-0"
+															href="#" style="border: 1px solid;" data-toggle="modal"
+															data-target="#editModal"><i class="fa fa-eye fa-1x"
+															aria-hidden="true"></i></a> <a
+															class="btn btn-link text-warning text-gradient px-2 py-2 mb-0"
+															href="#" style="border: 1px solid;"><i
+															class="fa fa-download fa-1x" aria-hidden="true"></i></a>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="mb-3 py-3">
+									<label class="form-label">Remarks</label>
+									<textarea class="form-control" id="exampleFormControlTextarea1"
+										rows="3"></textarea>
+								</div>
+
+								<div class="d-grid gap-2 d-md-block py-4">
+									<button class="btn btn-danger" type="button">Cancel</button>
+									<button class="btn btn-dark" type="button">Rest</button>
+									<button class="btn btn-success" type="button">Save as
+										Draft</button>
+									<!-- <button class="btn btn-primary pull-right ml-2" type="button">Next <i
+                                        class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
+                                <button class="btn btn-dark pull-right" type="button"><i
+                                        class="fa fa-long-arrow-left" aria-hidden="true"></i> Back</button> -->
+								</div>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<!---footer-->
+			<footer>
+				<div class="container-fluid mt-4" style="background-color: #fc9e2f">
+					<div class="container">
+						<div class="row text-dark text-center">
+							<span class="align-middle py-2">© Jindal Steel & Power
+								Limited</span>
+						</div>
+					</div>
+			</footer>
+	</section>
+
+	<!--finance edit modal-->
+	<div class="modal fade" id="financeEditModal" tabindex="-1"
+		role="dialog" aria-labelledby="financeEditModal" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="smsEditModal">Finance</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="row">
+							<form action="/action_page.php">
+								<div class="col-sm-3 mb-3">
+									<label for="#" class="form-label">Product Name <i
+										class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+										data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+										class="form-control" placeholder="Slab" name="#"
+										ng-model="financeRequest.product"
+										ng-bind="financeRequest.product=qualityList.product" disabled>
+								</div>
+
+								<div class="col-sm-3 mb-3">
+									<label for="#" class="form-label">External Grade <i
+										class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+										data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+										class="form-control" placeholder="Rock Hard 450" name="#"
+										ng-model="financeRequest.externalGrade"
+										ng-bind="financeRequest.externalGrade=qualityList.externalGrade"
+										disabled>
+								</div>
+
+								<div class="col-sm-3 mb-3">
+									<label for="#" class="form-label">Internal Grade <i
+										class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+										data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+										class="form-control" placeholder="JARH45XLO1" name="#"
+										ng-model="financeRequest.internalGrade"
+										ng-bind="financeRequest.internalGrade=qualityList.internalGrade"
+										disabled> <input type="hidden" class="form-control"
+										id="text" ng-model="financeRequest.qualityRequestFkId"
+										ng-bind="financeRequest.qualityRequestFkId=qualityList.id"
+										placeholder="Construction / Structural" name="text">
+								</div>
+
+								<div class="col-sm-3 mb-3">
+									<label for="" class="form-label">Segment <i
+										class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+										data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+										class="form-control" id="text"
+										ng-model="financeRequest.segment"
+										placeholder="Construction / Structural" name="text">
+								</div>
+						</div>
+
+						<div class="row">
+
+
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Sub Segment <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+									class="form-control" placeholder="Mild Steel" name=""
+									ng-model="financeRequest.subSegment">
+							</div>
+
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Alloy Extra <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+									class="form-control" placeholder="" name=""
+									ng-model="financeRequest.alloyExtra">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">QC Rejection Impact % <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+									class="form-control" placeholder="0.0%" name=""
+									ng-model="financeRequest.qcRejectionImpactPer"> <input
+									type="hidden" class="form-control" name=""
+									ng-model="financeRequest.id">
+
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">QC Rejection Impact Rs
+									<i class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i>
+								</label> <input type="text" class="form-control" placeholder="" name=""
+									ng-model="financeRequest.qcRejectionImpactRs">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">SMS Process Extra <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+									class="form-control" placeholder="" name=""
+									ng-model="financeRequest.smsProcessExtra">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Plate Mill Yield Impact
+									(Rs) <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i>
+								</label> <input type="text" class="form-control" placeholder="" name=""
+									ng-model="financeRequest.plateMillYieldImpact">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Plate Mill NCO % <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+									class="form-control" placeholder="" name=""
+									ng-model="financeRequest.plateMillNco">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Plate Mill NCO Impact
+									(Rs) <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i>
+								</label> <input type="text" class="form-control" placeholder="" name=""
+									ng-model="financeRequest.plateMillNcoImpact">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Plate Mill Rejection %
+									<i class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i>
+								</label> <input type="text" class="form-control" placeholder="" name=""
+									ng-model="financeRequest.plateMillRejection">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Plate Mill Rejection
+									Impact (Rs) <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i>
+								</label> <input type="text" class="form-control" placeholder="" name=""
+									ng-model="financeRequest.plateMillRejectionImpact">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Process Charges other
+									than Base Grade (Rs) <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i>
+								</label> <input type="text" class="form-control" placeholder="" name=""
+									ng-model="financeRequest.processCharges">
+							</div>
+							<div class="col-sm-3 mb-3">
+								<label for="" class="form-label">Total Revised Cost <i
+									class="fa fa-info pull-right bg-gray-active thumbnail mb-0"
+									data-bs-toggle="tooltip" title="Slab"></i></label> <input type="text"
+									class="form-control" placeholder="" name="" readonly
+									ng-model="financeRequest.totalRevisedCost">
+							</div>
+						</div>
+					</form>
+					<div class="bg-info">
+						<div class="px-2 p-1">
+							<h6 class="text-white">Costing Details</h6>
+						</div>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<thead class="bg-light">
+								<tr>
+									<th class="bg-dark text-white">Sr.No.</th>
+									<th class="bg-dark text-white">Item code</th>
+									<th class="bg-dark text-white">Description</th>
+									<th class="bg-warning">Rates</th>
+									<th class="bg-warning">Base Rates</th>
+									<th class="bg-warning">Rates LCNC BASIS</th>
+									<th class="bg-warning">SAP Rate</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="cost in costRequest">
+									<td>{{$index+1}}</td>
+									<td>{{cost.itemCode}}</td>
+									<td>{{cost.description}}</td>
+									<td class="font-weight-bolder">{{cost.rates}}</td>
+									<td class="font-weight-bolder">{{cost.baseRates}}</td>
+									<td class="font-weight-bolder">{{cost.ratesLcncBasis}}</td>
+									<td class="font-weight-bolder">{{cost.sapRate}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="mb-3 py-3">
+						<label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
+						<textarea class="form-control" id="exampleFormControlTextarea1"
+							ng-model="financeRequest.remarks" rows="3"></textarea>
+					</div>
+
+					<div class="d-grid gap-2 d-md-block py-4">
+						<button class="btn btn-danger" type="button">Cancel</button>
+						<button ng-click="saveFinance(1)" class="btn btn-dark"
+							type="button">Submit</button>
+						<button ng-click="saveFinance(0)" class="btn btn-success"
+							type="button">Save as Draft</button>
+						<button type="button" class="btn btn-secondary pull-right"
+							data-dismiss="modal">Close</button>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!---finance view details-->
+	<div class="modal fade" id="viewModal" tabindex="-1" role="dialog"
+		aria-labelledby="viewfinanceModal" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editModalLabel">Finance Entry
+						Details</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- <div class="row">
+                        <div class="col-sm-3 mb-3">
+                            <label for="#" class="form-label">Product Name <i
+                                    class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip"
+                                    title="Slab"></i></label>
+                            <input type="text" class="form-control" placeholder="Slab" name="#"  >
+                        </div>
+
+                        <div class="col-sm-3 mb-3">
+                            <label for="#" class="form-label">External Grade <i
+                                    class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip"
+                                    title="Slab"></i></label>
+                            <input type="text" class="form-control" placeholder="Rock Hard 450" name="#"   >
+                        </div>
+
+                        <div class="col-sm-3 mb-3">
+                            <label for="#" class="form-label">Enternal Grade <i
+                                    class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip"
+                                    title="Slab"></i></label>
+                            <input type="text" class="form-control" placeholder="JARH45XLO1" name="#"  >
+                        </div>
+                    </div> -->
+
+					<form>
+						<div class="form-group row" style="border: 0px solid;">
+							<div class="table-responsive">
+								<table class="table table-bordered">
+									<thead class="bg-info">
+										<tr>
+											<th>Sr. No.</th>
+											<th>Segment</th>
+											<th>Sub Segment</th>
+											<th>Alloy Extra</th>
+											<th>QC Rejection Impact %</th>
+											<th>SMS Process Extra</th>
+											<th>Plate Mill Yield Impact (Rs)</th>
+											<th>Plate Mill NCO %</th>
+											<th>Plate Mill NCO Impact (Rs)</th>
+											<th>Plate Mill Rejection %</th>
+											<th>Plate Mill Rejection Impact (Rs)</th>
+											<th>Process Charges other than Base Grade (Rs)</th>
+											<th>Total Revised Cost</th>
+											<th>Remarks</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<tr>
+											<td>{{$index+1}}</td>
+											<td>{{financeHistory.segment}}</td>
+											<td>{{financeHistory.subSegment}}</td>
+											<td>{{financeHistory.alloyExtra}}</td>
+											<td>{{financeHistory.qcRejectionImpactPer}}</td>
+											<td>{{financeHistory.smsProcessExtra}}</td>
+											<td>{{financeHistory.plateMillYieldImpact}}</td>
+											<td>{{financeHistory.plateMillNco}}</td>
+											<td>{{financeHistory.plateMillNcoImpact}}</td>
+											<td>{{financeHistory.plateMillRejection}}</td>
+											<td>{{financeHistory.plateMillRejectionImpact}}</td>
+											<td>{{financeHistory.processCharges}}</td>
+											<td>{{financeHistory.totalRevisedCost}}</td>
+											<td>{{financeHistory.remarks}}</td>
+
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="col-md-12 text-right">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+							<!-- <button type="button" class="btn btn-warning ml-2">Download Excel <i
+                                    class="fa fa-file-excel-o" aria-hidden="true"></i></button> -->
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--puarchas-->
+	<div class="modal fade" id="purEditModal" tabindex="-1" role="dialog"
+		aria-labelledby="financeEditModal" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="smsEditModal">Ferro Costing Rates</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="table-responsive">
+							<table id="tblCustomers" class="table table-bordered">
+								<thead class="bg-light">
+									<tr>
+										<th>Sr. No.</th>
+										<!-- <th>Date</th> -->
+										<th>Item Code</th>
+										<th>Description</th>
+										<th>Rates</th>
+										<th>Base Rates</th>
+										<th>Rates LCNC BASIS</th>
+										<th>SAP Rate </th>
+										
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="query in  costRequest track by $index" ng-init="index=$index">
+										<td style="width: 60px;">{{index+1}}</td>
+										<!-- <td><input type="text" id="txtCountry" ng-model="costRequest[index].costingRateDate"/></td> -->
+										<td><input type="text" id="txtTIO"
+											ng-model="costRequest[index].itemCode" /></td>
+										<td><input type="text" id="txtDIO"
+											ng-model="costRequest[index].description" /></td>
+										<td><input type="text" id="txtCIO"
+											ng-model="costRequest[index].rates" /></td>
+										<td><input type="text" id="txtBaseRate"
+											ng-model="costRequest[index].baseRates" /></td>
+										<td><input type="text" id="txtLCNC"
+											ng-model="costRequest[index].ratesLcncBasis" /></td>
+										<td><input type="text" id="txtSAP"
+											ng-model="costRequest[index].sapRate" /></td>
+										<!-- <td><input type="hidden" id="txtSAP" ng-model="costRequest[index].qualityRequestFkId" ng-bind="costRequest[index].qualityRequestFkId=qualityList.id" /></td> -->
+										<td><a ng-if="index==0" ng-Click="addRow1(index)"
+											href="#" class="btn btn-success btn-sm"><i
+												class="fa fa-plus"></i></a> <a ng-Click="removeRow1(index)"
+											ng-if="index!=0" href="#" class="btn btn-danger btn-sm"><i
+												class="fa fa-minus"></i></a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+					<section class="py-5">
+
+						<button type="submit" ng-click="saveCost(0)"
+							class="btn btn-primary save-btn">Save as Draft</button>
+						<button type="submit" ng-click="saveCost(1)"
+							class="btn btn-success save-btn">Submit</button>
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Close</button>
+					</section>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!---view detial--->
+	<div class="modal fade" id="purviewModal" tabindex="-1" role="dialog"
+		aria-labelledby="viewfinanceModal" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editModalLabel">Ferro Alloy Entry
+						Details</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group row" style="border: 0px solid;">
+							<div class="table-responsive">
+								<table class="table table-bordered">
+									<thead class="bg-light">
+										<tr>
+											<th>Sr.No.</th>
+											<th>Item code</th>
+											<th>Description</th>
+											<th>Rates</th>
+											<th>Base Rates</th>
+											<th>Rates LCNC BASIS</th>
+											<th>SAP rate</th>
+										</tr>
+									</thead>
+
+									<tbody>
+										<tr ng-repeat="cost in costRequest">
+											<td>{{$index+1}}</td>
+											<td>{{cost.itemCode}}</td>
+											<td>{{cost.description}}</td>
+											<td >{{cost.rates}}</td>
+											<td >{{cost.baseRates}}</td>
+											<td >{{cost.ratesLcncBasis}}</td>
+											<td >{{cost.sapRate}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<!-- <button type="button" class="btn btn-warning pull-right">
+							Download Excel <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+						</button> -->
+
+						<!-- <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>
+                     <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button> -->
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!---login script-->
+	<!---search select dropeown list--js-->
+	<script
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+	<script>
+		// Add the following code if you want the name of the file appear on select
+		$(".custom-file-input").on(
+				"change",
+				function() {
+					var fileName = $(this).val().split("\\").pop();
+					$(this).siblings(".custom-file-label").addClass("selected")
+							.html(fileName);
+				});
+	</script>
+	<!---search select dropeown list--js-->
+	<script>
+		$('.selectpicker').selectpicker({
+			style : 'btn-1'
+		});
+	</script>
+	<!---end js--->
+	<script>
+		// Initialize tooltips
+		var tooltipTriggerList = [].slice.call(document
+				.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+			return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+	</script>
+
+	<!--add row-->
+	<script type="text/javascript">
+		window.onload = function() {
+			//Build an array containing Customer records.
+			var customers = new Array();
+
+			//Add the data rows.
+			for (var i = 0; i < customers.length; i++) {
+				AddRow(customers[i][0], customers[i][1]);
+			}
+		};
+
+		function Add() {
+			var txtName = document.getElementById("txtName");
+			var txtCountry = document.getElementById("txtCountry");
+
+			AddRow(txtName.value, txtCountry.value);
+			txtName.value = "";
+			txtCountry.value = "";
+			txtCIO.value = "";
+			txtDIO.value = "";
+			txtTIO.value = "";
+			textBaseRate.value = "";
+			textLCNC.value = "";
+			textSAP.value = "";
+		};
+
+		function Remove(button) {
+			//Determine the reference of the Row using the Button.
+			var row = button.parentNode.parentNode;
+			var name = row.getElementsByTagName("TD")[0].innerHTML;
+			if (confirm("Do you want to delete: " + name)) {
+
+				//Get the reference of the Table.
+				var table = document.getElementById("tblCustomers");
+
+				//Delete the Table row using it's Index.
+				table.deleteRow(row.rowIndex);
+			}
+		};
+
+		function AddRow(name, country) {
+			//Get the reference of the Table's TBODY element.
+			var tBody = document.getElementById("tblCustomers")
+					.getElementsByTagName("TBODY")[0];
+
+			//Add Row.
+			row = tBody.insertRow(-1);
+
+			//Add Name cell.
+			var cell = row.insertCell(-1);
+			cell.innerHTML = name;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Country cell.
+			cell = row.insertCell(-1);
+			cell.innerHTML = country;
+
+			//Add Button cell.
+			cell = row.insertCell(-1);
+			var btnRemove = document.createElement("INPUT");
+			btnRemove.type = "button";
+			btnRemove.value = "Remove";
+			btnRemove.setAttribute("onclick", "Remove(this);");
+			cell.appendChild(btnRemove);
+		}
+	</script>
+
+</body>
+
+</html>

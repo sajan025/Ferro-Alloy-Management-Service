@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Ferro alloy</title>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!--datatable-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+
+  <link href="dist/css/style.css" rel="stylesheet" type="stylesheet" />
+
+  <!--font-awesome-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.css" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.js"></script>
+	
+	<!-- Angularjs  -->
+    <script th:replace="fragments :: angularJsCommonFile"></script>
+	<!-- Controllers And services -->
+	<script th:src="@{/angular/controllers/app.js}" ></script>
+	<script th:src="@{/angular/controllers/loginController.js}" ></script>
+	<!-- <script th:src="@{/angular/controllers/adminDashboardController.js}" ></script>
+	 <script th:src="@{/angular/services/adminDashboardService.js}" ></script> -->  	 
+	<script th:src="@{/angular/services/authInterceptorService.js}" ></script>
+	<script th:src="@{/angular/services/authService.js}" ></script>  	 
+
+  <style>
+    /*This is called staacking*/
+    .red {
+      /* background-color:red; */
+      z-index: 1;
+      padding-top: 20px;
+      /*Z-INDEX work in z direction. 1 Means ,it comes to first.*/
+    }
+
+    .blue {
+      background-color: blue;
+      left: 20px;
+      top: 20px;
+    }
+
+    .yellow {
+      background-color: yellow;
+      left: 40px;
+      top: 40px;
+      z-index: -1;
+      /*-1 Means ,it comes to last*/
+      /*z-index is worked only with position propaty*/
+    }
+    
+  </style>
+</head>
+
+<body ng-app="app" ng-controller="loginController" ng-init="init()">
+  <nav class="navbar navbar-light bg-light shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand"><img th:src="@{/angular/img/j-panther-logo.png}" width="100px;"></a>
+      <a class="navbar-brand"><img th:src="@{/angular/img/Jindal-logo.png}" width="100px;"></a>
+    </div>
+  </nav>
+  <!--navbar end-->
+<!-- <div ng-if="ShowSpinnerStatus" class="loader"></div> -->
+  <div class="container-fluid py-5 bg-primary text-white text-center" th:style="'height: 300px; background-image: url(\'' + ${contextPath + '/angular/img/bg.jpg'} + '\'); background-size: cover; position: relative; margin-bottom: -140px; background-repeat: no-repeat; background-position: top;'">
+    <div class="container red" style="padding-top: 70px;">
+
+      <div class="row text-dark shadow-sm" style="border-radius: 15px; padding: 30px; background-color: white;">
+        <div class="col-sm-6 bg-light shadow-sm p-3">
+          <h3>LOGIN </h3>
+          <form name="form" ng-submit="form.$valid && login()" >
+            <div class="mb-3 text-left" ng-class="{ 'has-error': form.$submitted && form.username.$invalid }">
+              <label  class="form-label">Email address</label>
+              <input  type="email" class="form-control" ng-model="loginData.username" required aria-describedby="emailHelp">
+               
+            </div>
+            <div class="mb-3  text-left" ng-class="{ 'has-error': form.$submitted && form.password.$invalid }">
+              <label  class="form-label">Password</label>
+              <input type="password" required ng-model="loginData.password" class="form-control" >
+            	
+            </div>
+
+
+            <div class="d-grid gap-2">
+            <button ng-disabled="ShowSpinnerStatus" class="btn btn-primary">LOGIN</button>
+                </div>
+          </form>
+        </div>
+        <div class="col-sm-6 shadow-sm" style="padding: 0px;"><img th:src="@{/angular/img/login.jpg}" width="100%" alt="img"></div>
+      </div>
+      <footer>
+        <div class="container-fluid mt-4">
+          <div class="container">
+            <div class="row text-dark">
+              <p>© Jindal Steel & Power Limited</p>
+            </div>
+        </div>
+      </footer>
+        
+      </div>
+    </div>    
+  </div> 
+  
+
+  <!---login script-->
+  <script th:src="@{/angular/js/main.js}"></script>
+  
+</body>
+
+</html>

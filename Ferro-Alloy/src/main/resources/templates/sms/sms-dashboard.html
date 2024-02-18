@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Ferro Alloy</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--datatable-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+
+    <link href="dist/css/style.css" rel="stylesheet" type="stylesheet" />
+
+    <!--font-awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!---search select dropeown list--->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="themify-icons/themify-icons.css" rel="stylesheet" type="text/css" />
+    <link href="dist/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!---search select dropeown list end--->
+    <!-- Angularjs  -->
+    <script th:replace="fragments :: angularJsCommonFile"></script>
+	<!-- Controllers And services -->
+	<script th:src="@{/angular/controllers/app.js}" ></script>
+		  <script th:src="@{/angular/services/authInterceptorService.js}" ></script>
+	<script th:src="@{/angular/services/authService.js}" ></script>  
+	 
+	<script th:src="@{/angular/controllers/smsController.js}" ></script>
+	 <script th:src="@{/angular/services/smsService.js}" ></script>
+	 <script th:src="@{/angular/services/qualityService.js}" ></script> 
+	 <style type="text/css">
+	 .green-cell {
+    /* background-color: green; */
+    color: green;
+}
+
+.red-cell {
+    /* background-color: red; */
+    color: red;
+}
+	 </style> 	 
+    
+
+</head>
+
+<body ng-app="app" ng-controller="smsController" ng-init="init()">
+    <nav class="navbar navbar-light bg-light shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand"><img th:src="@{/angular/img/Jindal-logo.png}" width="100px;"></a>
+            <form class="d-flex">
+                <a  ng-click="logout()" href=""><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</a>
+            </form>
+        </div>
+    </nav>
+    <!--navbar end-->
+    <section class="bg-dark">
+        <div class="container-fluid bg-primar py-3 text-white" style="height: 50px; background-image: url('/angular/img/6928.jpg'); background-size: cover;
+        position: relative; background-repeat: no-repeat; background-position: top;">
+            <h5>SMS</h5>
+        </div>
+
+        <!--sub-banner-->
+        <div class="container-fluid py-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content px-3 border bg-light" id="nav-tabContent">
+                        <div class="tab-pane fade active show" id="nav-quality" role="tabpanel"
+                            aria-labelledby="nav-home-tab">
+                            <div class="box-body row bg-dark pt-3">
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <input  type="text" ng-model="productName" placeholder="Product" class="form-control selectpicker" data-live-search="true"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <input type="text" ng-model="gradeName" placeholder="Grade" class="form-control selectpicker" data-live-search="true"/>
+                                    </div> 
+                                    
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <input  type="text" ng-model="internalGradename" placeholder="Internal grade" class="form-control selectpicker" data-live-search="true"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"> <a ng-click="getProductList(1,null,productName,gradeName,internalGradename);getCalVAlue()" ><span class="btn btn-primary"><i class="fa fa-search"
+                                   aria-hidden="true"></i> Search</span></a>
+                                </div>
+                            </div>
+
+                            <!--table-->
+                             <div class="d-flex bd-highlight bg-info my-3 p-2">
+                                <div class="flex-grow-1 bd-highlight pt-2"><h4>SMS View List</h4></div>
+                                <!-- <a href="smsHistory"><button type="button" class="btn btn-dark">History <i class="fa fa-history" aria-hidden="true"></i></button></a> -->
+                              </div> 
+
+                            <div class="table-responsive">                                
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Sr.No.</th>
+                                            <th>Products Name</th>
+                                            <th>External Grade</th>
+                                            <th>Internal Grade</th>
+                                            <th>Remarks</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Action</th>   
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr dir-paginate="d in data | itemsPerPage: 4 "  total-items="totalPages" current-page="currentPage" ng-init="pindex=$index" pagination-id="productPagination">
+                                            <td>{{ ($index + 1) + (currentPage - 1) * 4}}</td>
+                                            <td>{{d.product}}</td>
+                                            <td>{{d.externalGrade}}</td>
+                                            <td>{{d.internalGrade}}</td>
+                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">{{d.remarks}}</td>
+                                            <td>{{d.status}}</td>
+                                            <td style="width: 140px;"> 
+                                                <div class="ms-auto text-center">
+                                                    <a class="btn btn-link text-dark text-gradient px-2 py-0 mb-0" ng-click="setQualityData(d.id,d.product,d.externalGrade,d.internalGrade)" data-toggle="modal" data-target="#smsEditModal" style="border: 1px solid;"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></a>                        
+                                                    <a class="btn btn-link text-primary px-2 py-0 mb-0" href="#" style="border: 1px solid;" data-toggle="modal" ng-click="fatchRequestById(d.id);getSmsData(d.id,d.product,d.externalGrade,d.internalGrade)" data-target="#viewModal"><i class="fa fa-eye fa-1x" aria-hidden="true"></i></a>
+                                                    <a  href="/Ferro-Alloy/smsHistory/{{d.id}}" ><button type="button" class="btn btn-dark">History <i class="fa fa-history" aria-hidden="true"></i></button></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <dir-pagination-controls on-page-change="getProductList(newPageNumber)" direction-links="true" boundary-links="true"  pagination-id="productPagination" ></dir-pagination-controls>
+                            </div>                      
+                        </div>
+
+                        <!--sms-->
+                        <!-- <div class="tab-pane fade" id="nav-sms" role="tabpanel" aria-labelledby="nav-sms-tab">
+                            <div class="tab-pane fade active show" id="nav-quality" role="tabpanel"
+                                aria-labelledby="nav-home-tab">
+                                <div class="box-body row bg-dark pt-3">
+                                    <div class="col-md-3">
+                                        <div class="form-group search_select_box">
+                                            <select class="form-control selectpicker" data-live-search="true">
+                                                <option>Select Product Group</option>
+                                                <option>Slab</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group search_select_box">
+                                            <select class="form-control selectpicker" data-live-search="true">
+                                                <option>Select External Grade</option>
+                                                <option>Rock Hard 450</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group search_select_box">
+                                            <select class="form-control selectpicker" data-live-search="true">
+                                                <option>Select Internal Grade</option>
+                                                <option>JARH45XLO1</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i
+                                        class="fa fa-search" aria-hidden="true"></i> Search</span></a>
+                                    </div>
+                                </div>
+
+                                table
+                                <div class="table-responsive py-4">
+                                    <div class="col-sm-12 bg-light py-1" style="padding: 0px;">
+                                        <h4>Lean Chemistry Grades</h4>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <thead class="header">
+                                            <tr>
+                                                <th>Material</th>
+                                                <th>Min</th>
+                                                <th>Actual</th>
+                                                <th>Max</th>
+                                                <th>C Eq</th>
+                                                <th>Lean Chemistry Grades</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Mn</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>C</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Si</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Crk anuj</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                -Consumption in Kg per Ton of LM
+                                <div class="col-sm-12 bg-dark py-1 px-2" style="padding: 0px;">
+                                    <h6 class="text-white">Consumption in Kg per Ton of LM</h6>
+                                </div>
+
+                                <div class="table-responsive py-2">
+                                    <table class="table table-bordered">
+                                        <thead class="header">
+                                            <tr>
+                                                <th colspan="33">Material code</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>3000000954</td>
+                                                <td>3000000902</td>
+                                                <td>2000002649</td>
+                                                <td>2000002000</td>
+                                                <td>2000000084</td>
+                                                <td>2000000001</td>
+                                                <td>2000000045</td>
+                                                <td>2000000050</td>
+                                                <td>2000002120</td>
+                                                <td>2000000055</td>
+                                                <td>2000000099</td>
+                                                <td>2000001580</td>
+                                                <td>2000001561</td>
+                                                <td>2000000103</td>
+                                                <td>2000000069</td>
+                                                <td>2000000042</td>
+                                                <td>2000001280</td>
+                                                <td>2000000048</td>
+                                                <td>2000000405</td>
+                                                <td>2000000052</td>
+                                                <td>2000001949</td>
+                                                <td>2000000047</td>
+                                                <td>2000000041</td>
+                                                <td>2000000019</td>
+                                                <td>2000000040</td>
+                                                <td>2000000049</td>
+                                                <td>2000000051</td>
+                                                <td>2000003046</td>
+                                                <td>2000002852</td>
+                                                <td>2000000096</td>
+                                                <td>2000000104</td>
+                                                <td>CALCINED_LIME_ALL</td>
+                                                <td>2000001831</td>
+                                            </tr>
+
+                                            <tr>
+                                                <thead class="header">
+                                                    <th colspan="33">Rate per Ton</th>
+                                                </thead>
+                                            </tr>
+                                            <tr>
+                                                <td>70513</td>
+                                                <td>86110</td>
+                                                <td>66363</td>
+                                                <td>217665</td>
+                                                <td>84460</td>
+                                                <td>146925</td>
+                                                <td>137190</td>
+                                                <td>7725</td>
+                                                <td>146925</td>
+                                                <td>137190</td>
+                                                <td>7725</td>
+                                                <td>146925</td>
+                                                <td>137190</td>
+                                                <td>7725</td>
+                                                <td>249900</td>
+                                                <td>253470</td>
+                                                <td>200940</td>
+                                                <td>435540</td>
+                                                <td>773160</td>
+                                                <td>2636680</td>
+                                                <td>275400</td>
+                                                <td>115770</td>
+                                                <td>366180</td>
+                                                <td>204346</td>
+                                                <td>125371</td>
+                                                <td>41311</td>
+                                                <td>428590</td>
+                                                <td>22557</td>
+                                                <td>23278</td>
+                                                <td>158768</td>
+                                                <td>221493</td>
+                                                <td>6695</td>
+                                                <td>208287</td>
+                                            </tr>
+
+                                            <tr class="th-header">
+                                                <th>Coke, Petroleum Calcined,25kg Pack</th>
+                                                <th>Graphite Fines</th>
+                                                <th>Silico Manganese,HP,20-60MM</th>
+                                                <th>SILICO MANGANESE;EXTRA LOW C,10-55MM</th>
+                                                <th>SILICO MANGANESE,LOW PHOS</th>
+                                                <th>MANGANESE METAL BRIQUTES</th>
+                                                <th>FERRO MANGANESE,HC</th>
+                                                <th>FERRO MANGANESE,LC</th>
+                                                <th>FERRO SILICON</th>
+                                                <th>ALUMINIUM DROSS</th>
+                                                <th class="bg-danger">INGOT,AL,PURITY:99.5%</th>
+                                                <th>WIRE,AL,DIA:12-13MM</th>
+                                                <th class="bg-danger">WIRE;16MM,CA-SI</th>
+                                                <th>Ca WIRE, PURE</th>
+                                                <th>COPPER CATHODE,CU CONTENT,97-99% PURE</th>
+                                                <th>NICKEL METAL</th>
+                                                <th>FERRO CHROME,LC</th>
+                                                <th>FERRO CHROME,HC,CR:60TO65%</th>
+                                                <th>FERRO NIOBIUM</th>
+                                                <th>WIRE,FE-TI CORED,13MM,TI 65% MIN</th>
+                                                <th>FERRO VANADIUM</th>
+                                                <th>NITROVAN</th>
+                                                <th>FERRO MOLYBDENUM</th>
+                                                <th>FERRO BORON</th>
+                                                <th>SHOTS ALUMINIUM</th>
+                                                <th>FERRO PHOSPHOROUS</th>
+                                                <th>FERRO TITANIUM</th>
+                                                <th>SYN SLAG Pre Melted</th>
+                                                <th>Slag Fluidiser</th>
+                                                <th>WIRE 13MM,CA-FE</th>
+                                                <th>AL CUBES</th>
+                                                <th>Calcined Lime</th>
+                                                <th>MANGANESE CORE WIRE,NITRIDED,13MM</th>
+                                            </tr>
+                                            <tr>
+                                                <td>1.5</td>
+                                                <td>-</td>
+                                                <td>8.00</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td> 0.30</td>
+                                                <td> 1.80</td>
+                                                <td> 0.25</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td> 0.80</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                text area
+                                <div class="mb-3 py-3">
+                                    <label for="exampleFormControlTextarea1" class="form-label">Remarks</label>
+                                    <textarea class="form-control"  id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-block py-4">
+                                    <button class="btn btn-danger" type="button">Cancel</button>
+                                    <button class="btn btn-dark" type="button">Rest</button>
+                                    <button class="btn btn-success"  type="button">Save as Draft</button>
+                                    <button class="btn btn-primary pull-right ml-2" type="button">Next <i
+                                            class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
+                                    <button class="btn btn-dark pull-right" type="button"><i
+                                            class="fa fa-long-arrow-left" aria-hidden="true"></i> Back</button>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!--finance-->
+                        <!-- <div class="tab-pane fade" id="nav-finance" role="tabpanel" aria-labelledby="nav-finance-tab">
+                            <div class="box-body row bg-dark pt-3">
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select Product Group</option>
+                                            <option>------1----</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select External Grade</option>
+                                            <option>------1----</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <select class="form-control selectpicker" data-live-search="true">
+                                            <option>Select Internal Grade</option>
+                                            <option>------1----</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                                                aria-hidden="true"></i> Search</span></a>
+                                </div>
+                            </div>
+
+                            -table finance
+                            <div class="table-responsive py-2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <thead class="header">
+                                                <th colspan="11">SMS/MILLS</th>
+                                            </thead>
+                                        </tr>
+                                        <tr>
+                                            <th>Alloy Extra/Base Grade</th>
+                                            <th>QC Rejection Impact %</th>
+                                            <th>QC Rejection Impact Rs.</th>
+                                            <th>SMS Process Extra</th>
+                                            <th>Plate Mill Yield Impact (Rs)</th>
+                                            <th>Plate Mill NCO %</th>
+                                            <th>Plate Mill NCO Impact (Rs)</th>
+                                            <th>Plate Mill Rejection %</th>
+                                            <th>Plate Mill Rejection Impact (Rs)</th>
+                                            <th>Process Charges other than Base Grade (Rs)</th>
+                                            <th>Total Revised Cost</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>616</td>
+                                            <td>0.5%</td>
+                                            <td>36</td>
+                                            <td>0.00</td>
+                                            <td>56.6</td>
+                                            <td>1.53%</td>
+                                            <td>131.82</td>
+                                            <td>0.3%</td>
+                                            <td>25.85</td>
+                                            <td>0.00</td>
+                                            <td>866</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            -cost of ferro table
+                            <div class="col-md-12 pull-right" style="text-align: right; background-color: #cee9f1;">
+                                <input type="month" id="start" name="start" min="2018-03" value="2018-05">
+                            </div>
+                            search by month end
+                            <div class="table-responsive py-2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <thead class="header">
+                                                <th colspan="11">Cost of Ferro Alloy</th>
+                                            </thead>
+                                        </tr>
+                                        <tr>
+                                            <th>Sr.No.</th>
+                                            <th>Date</th>
+                                            <th>Item Code</th>
+                                            <th>Description</th>
+                                            <th>Rates as on 01Jan'23</th>
+                                            <th>Base Rates as on 01 Jan'23</th>
+                                            <th>Rates as on 01 Jan'23 LCNC BASIS</th>
+                                            <th>SAP rate as on 01 Jan'23</th>
+                                            <th class="text-center">Action</th>                                           
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>6/21/2023</td>
+                                            <td>2000000001</td>
+                                            <td>Manganese Metal Briqutes</td>
+                                            <td>2,17,665</td>
+                                            <td>2,13,397</td>
+                                            <td>2,11,300</td>
+                                            <td>2,13,397</td>
+                                            <td style="width: 140px;">
+                                                <div class="ms-auto text-center">
+                                                  <a class="btn btn-link text-dark text-gradient px-2 py-2 mb-0" href="#" data-toggle="modal" data-target="#editModal" style="border: 1px solid;"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></i></a>                        
+                                                  <a class="btn btn-link text-primary px-2 py-2 mb-0" href="#" style="border: 1px solid;" data-toggle="modal" data-target="#editModal"><i class="fa fa-eye fa-1x" aria-hidden="true"></i></a>
+                                                  <a class="btn btn-link text-warning text-gradient px-2 py-2 mb-0" href="#" style="border: 1px solid;"><i class="fa fa-download fa-1x" aria-hidden="true"></i></a>
+                                                </div>
+                                              </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+
+                            <div class="d-grid gap-2 d-md-block py-4">
+                                <button class="btn btn-danger" type="button">Cancel</button>
+                                <button class="btn btn-dark" type="button">Rest</button>
+                                <button class="btn btn-success" type="button">Save as Draft</button>
+                                <button class="btn btn-primary pull-right ml-2" type="button">Next <i
+                                        class="fa fa-long-arrow-right" aria-hidden="true"></i></button>
+                                <button class="btn btn-dark pull-right" type="button"><i
+                                        class="fa fa-long-arrow-left" aria-hidden="true"></i> Back</button>
+                            </div>
+
+                        </div> -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!---footer-->
+        <footer>
+            <div class="container-fluid mt-4" style="background-color: #fc9e2f">
+                <div class="container">
+                    <div class="row text-dark text-center">
+                        <span class="align-middle py-2">© Jindal Steel & Power Limited</span>
+                    </div>
+                </div>
+                </div>
+        </footer>
+    </section>
+
+<!--sms edit modal-->
+<div class="modal fade" id="smsEditModal" tabindex="-1" role="dialog" aria-labelledby="financeEditModal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="smsEditModal">SMS</h5>
+                    <button type="button" class="close" data-dismiss="modal" ng-click="reSetSmsData()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body pt-2">
+                    <h5 class="text-center">Calculated Chemistry</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="bg-info">
+                                <tr>
+                                    <th>Material</th>
+                                    <th>C</th>
+                                    <th>Mn</th>
+                                    <th>Si</th>
+                                    <th>Cr</th>
+                                    <th>V</th>
+                                    <th>Nb</th>
+                                    <th>Ni</th>
+                                    <th>Mo</th>
+                                    <th>Cu</th>
+                                    <th>Ti</th>
+                                    <th>Ca</th>
+                                    <th>Ai</th>
+                                    <th>B</th>
+                                    <th>P</th>
+                                    <th>N</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <th>Min</th>
+                                    <td>{{qualityRequestDto.compositionList[0].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[1].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[2].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[3].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[4].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[5].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[6].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[7].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[8].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[9].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[10].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[11].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[12].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[13].min}}</td>
+                                    <td>{{qualityRequestDto.compositionList[14].min}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Max</th>
+                                    <td>{{qualityRequestDto.compositionList[0].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[1].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[2].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[3].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[4].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[5].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[6].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[7].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[8].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[9].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[10].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[11].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[12].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[13].max}}</td>
+                                    <td>{{qualityRequestDto.compositionList[14].max}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Calculated</th>
+                                     <td ng-class="{ 'green-cell': resultForC >= qualityRequestDto.compositionList[0].min && resultForC <= qualityRequestDto.compositionList[0].max, 'red-cell': (resultForC < qualityRequestDto.compositionList[0].min) || ( resultForC > qualityRequestDto.compositionList[0].max ) }">{{resultForC}}</td> 
+                                   <!--  <td></td> -->
+                                    <td ng-class="{ 'green-cell': resultForMn >= qualityRequestDto.compositionList[1].min && resultForMn <= qualityRequestDto.compositionList[1].max, 'red-cell': (resultForMn < qualityRequestDto.compositionList[1].min) || ( resultForMn > qualityRequestDto.compositionList[1].max ) }">{{resultForMn}}</td>
+                                    <td ng-class="{ 'green-cell': resultForSi >= qualityRequestDto.compositionList[2].min && resultForSi <= qualityRequestDto.compositionList[2].max, 'red-cell': (resultForSi < qualityRequestDto.compositionList[2].min) || ( resultForSi > qualityRequestDto.compositionList[2].max ) }">{{resultForSi}}</td>
+                                    <td ng-class="{ 'green-cell': resultForCr >= qualityRequestDto.compositionList[3].min && resultForCr <= qualityRequestDto.compositionList[3].max, 'red-cell': (resultForCr < qualityRequestDto.compositionList[3].min) || ( resultForCr > qualityRequestDto.compositionList[3].max ) }">{{resultForCr}}</td>
+                                    <td ng-class="{ 'green-cell': resultForV >= qualityRequestDto.compositionList[4].min && resultForV <= qualityRequestDto.compositionList[4].max, 'red-cell': (resultForV < qualityRequestDto.compositionList[4].min) || ( resultForV > qualityRequestDto.compositionList[4].max ) }">{{resultForV}}</td>
+                                    <td ng-class="{ 'green-cell': resultForNb >= qualityRequestDto.compositionList[5].min && resultForNb <= qualityRequestDto.compositionList[5].max, 'red-cell': (resultForNb < qualityRequestDto.compositionList[5].min) || ( resultForNb > qualityRequestDto.compositionList[5].max ) }">{{resultForNb}}</td>
+                                    <td ng-class="{ 'green-cell': resultForNi >= qualityRequestDto.compositionList[6].min && resultForNi <= qualityRequestDto.compositionList[6].max, 'red-cell': (resultForNi < qualityRequestDto.compositionList[6].min) || ( resultForNi > qualityRequestDto.compositionList[6].max ) }">{{resultForNi}}</td>
+                                    <td ng-class="{ 'green-cell': resultForMo >= qualityRequestDto.compositionList[7].min && resultForMo <= qualityRequestDto.compositionList[7].max, 'red-cell': (resultForMo < qualityRequestDto.compositionList[7].min) || ( resultForMo > qualityRequestDto.compositionList[7].max ) }">{{resultForMo}}</td>
+                                    <td ng-class="{ 'green-cell': resultForCu >= qualityRequestDto.compositionList[8].min && resultForCu <= qualityRequestDto.compositionList[8].max, 'red-cell': (resultForCu < qualityRequestDto.compositionList[8].min) || ( resultForCu > qualityRequestDto.compositionList[8].max ) }">{{resultForCu}}</td>
+                                    <td ng-class="{ 'green-cell': resultForTi >= qualityRequestDto.compositionList[9].min && resultForTi <= qualityRequestDto.compositionList[9].max, 'red-cell': (resultForTi < qualityRequestDto.compositionList[9].min) || ( resultForTi > qualityRequestDto.compositionList[9].max ) }">{{resultForTi}}</td>
+                                    <td ng-class="{ 'green-cell': resultForCa >= qualityRequestDto.compositionList[10].min && resultForCa <= qualityRequestDto.compositionList[10].max, 'red-cell': (resultForCa < qualityRequestDto.compositionList[10].min) || ( resultForCa > qualityRequestDto.compositionList[10].max ) }">{{resultForCa}}</td>
+                                    <td ng-class="{ 'green-cell': resultForAi >= qualityRequestDto.compositionList[11].min && resultForAi <= qualityRequestDto.compositionList[11].max, 'red-cell': (resultForAi < qualityRequestDto.compositionList[11].min) || ( resultForAi > qualityRequestDto.compositionList[11].max ) }">{{resultForAi}}</td>
+                                    <td ng-class="{ 'green-cell': resultForB >= qualityRequestDto.compositionList[12].min && resultForB <= qualityRequestDto.compositionList[12].max, 'red-cell': (resultForB < qualityRequestDto.compositionList[12].min) || ( resultForB > qualityRequestDto.compositionList[12].max ) }">{{resultForB}}</td>
+                                    <td ng-class="{ 'green-cell': resultForP >= qualityRequestDto.compositionList[13].min && resultForP <= qualityRequestDto.compositionList[13].max, 'red-cell': (resultForP < qualityRequestDto.compositionList[13].min) || ( resultForP > qualityRequestDto.compositionList[13].max ) }">{{resultForP}}</td>
+                                    <td ng-class="{ 'green-cell': resultForN >= qualityRequestDto.compositionList[14].min && resultForN <= qualityRequestDto.compositionList[14].max, 'red-cell': (resultForN < qualityRequestDto.compositionList[14].min) || ( resultForN > qualityRequestDto.compositionList[14].max ) }">{{resultForN}}</td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-body">
+                <div class="tab-content px-4 border bg-light overflow-auto p-3 bg-light"
+                        style="max-width: 100%; max-height: 400px;">
+                    <form>
+                        <div class="row">
+                            <!-- <form action="/action_page.php"> -->
+                                <div class="col-sm-3 mb-3">
+                                    <label for="#" class="form-label">Product Name <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Product Name"></i></label>
+                                    <input type="text" class="form-control" ng-model="smsProduct1" name="#" disabled>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <label for="#" class="form-label">External Grade <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="External Grade"></i></label>
+                                    <input type="text" class="form-control" ng-model="smsGrade1" name="#"
+                                        disabled>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <label for="#" class="form-label">internal Grade <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="internal Grade"></i></label>
+                                    <input type="text" class="form-control" ng-model="smsInternalGrade1" name="#" disabled>
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Segment <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Segment"></i></label>
+                                    <input type="text" ng-model="smsValues.segment" class="form-control" id="email" placeholder="" name="email">
+                                </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- <form action="/action_page.php">  -->                               
+ 
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">SubSegment <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="SubSegment"></i></label>
+                                    <input type="text" ng-model="smsValues.subSegment" class="form-control" placeholder="" name="">
+                                </div>
+
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Process Route <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Process Route"></i></label>
+                                    <input type="text" ng-model="smsValues.processRoute" class="form-control" placeholder="" name="">
+                                </div>
+                                
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Coke, Petroleum Calcined, 25KG Pack <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Coke, Petroleum Calcined, 25KG Pack"></i></label>
+                                    <input type="number" ng-model="smsValues.cokePetroleumCalcined" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Graphite Fines <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Graphite Fines"></i></label>
+                                    <input type="number" ng-model="smsValues.graphiteFines" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Silico Manganese, HP, 20-60MM <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Silico Manganese, HP, 20-60MM"></i></label>
+                                    <input type="number" ng-model="smsValues.silicoManganeseHP" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Silico Manganes, Extra Low C, 10-55MM <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Silico Manganes, Extra Low C, 10-55MM"></i></label>
+                                    <input type="number" ng-model="smsValues.silicoManganesExtraLowC" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">
+                                        Silico Manganese, Low Phos <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Silico Manganese, Low Phos"></i></label>
+                                    <input type="number" ng-model="smsValues.silicoManganeseLowPhos" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">
+                                        Manganese Metal Briqutes <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Manganese Metal Briqutes"></i></label>
+                                    <input type="number" ng-model="smsValues.manganeseMetalBriqutes" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Manganese, HC <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Manganese, HC"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroManganeseHC" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Manganses, LC <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Manganses, LC"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroMangansesLC" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Silicon <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Silicon"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroSilicon" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label"> Aluminium Dross <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Aluminium Dross"></i></label>
+                                    <input type="number" ng-model="smsValues.aluminiumDross" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for=""  class="form-label"> Ingot, AL, Purity: 99.5% <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ingot, AL, Purity: 99.5%"></i></label>
+                                    <input type="number" ng-model="smsValues.ingotAL" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for=""  class="form-label">Wire, AL, DIA:12-13MM <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Wire, AL, DIA:12-13MM"></i></label>
+                                    <input type="number" ng-model="smsValues.wireAL" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for=""  class="form-label">Wire, 16MM,CA-SI <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Wire, 16MM,CA-SI"></i></label>
+                                    <input type="number" ng-model="smsValues.wire16MM" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ca Wire, Pure <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ca Wire, Pure"></i></label>
+                                    <input type="number" ng-model="smsValues.caWirePure" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Copper Cathode, CU Content, 97-99% Pure <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Copper Cathode, CU Content, 97-99% Pure"></i></label>
+                                    <input type="number" ng-model="smsValues.copperCathode" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Nickel Metal <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Nickel Metal"></i></label>
+                                    <input type="number" ng-model="smsValues.nickelMetal" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Chrome,LC <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Chrome,LC"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroChromeLC" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Chrome, CR: 60T065% <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Chrome, CR: 60T065%"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroChromeCR" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Niobium <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Niobium"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroNiobium" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Wire, FE-TI Cored, 13MM, TI 65% Min <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Wire, FE-TI Cored, 13MM, TI 65% Min"></i></label>
+                                    <input type="number" ng-model="smsValues.wireFETICored" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Vanadium <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Vanadium "></i></label>
+                                    <input type="number" ng-model="smsValues.ferroVanadium" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Nitrovan <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Nitrovan"></i></label>
+                                    <input type="number" ng-model="smsValues.nitrovan" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Molybdenum <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Molybdenum"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroMolybdenum" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Boron <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Boron"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroBoron" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Shots Aluminium <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Shots Aluminium"></i></label>
+                                    <input type="number" ng-model="smsValues.shotsAluminium" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Aluminium <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Aluminium"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroAluminium" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro Phosphorous <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro Phosphorous"></i></label>
+                                    <input type="number" ng-model="smsValues.ferroPhosphorous" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Ferro TITANIUM <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Ferro TITANIUM "></i></label>
+                                    <input type="number" ng-model="smsValues.ferroTitaninum" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">SYN Slag Pre Melted <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="SYN Slag Pre Melted"></i></label>
+                                    <input type="number" ng-model="smsValues.synSlagPreMelted" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Slag Fluidiser <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Slag Fluidiser"></i></label>
+                                    <input type="number" ng-model="smsValues.slagFluidiser" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Wire 13MM,CA-FE <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Wire 13MM,CA-FE"></i></label>
+                                    <input type="number" ng-model="smsValues.wire13MM" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">AL Cubes <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="AL Cubes"></i></label>
+                                    <input type="number" ng-model="smsValues.alCubes" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Calcined Lime <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Calcined Lime"></i></label>
+                                    <input type="number" ng-model="smsValues.calcinedLime" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label">Manganese Core Wire, Nitrided, 13MM <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Manganese Core Wire, Nitrided, 13MM"></i></label>
+                                    <input type="number" ng-model="smsValues.manganeseCoreWire" class="form-control" placeholder="" name="">
+                                </div>
+                                <div class="col-sm-3 mb-3">
+                                    <label for="" class="form-label"> <b>Total Alloy Cost per Ton </b><i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="=SUMPRODUCT($J$3:$AQ$3,J6:AQ6)/1000/0.975"></i></label>
+                                    <input type="number" readonly ng-model="smsValues.totalAlloyCostPerTon" class="form-control" placeholder="" name="">
+                                </div>
+                        </div>
+                        
+                            <div class="row">
+                              <!-- <div class="col-sm-6 mb-3">
+                                <label for="" class="form-label">Quality Remark <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Slab"></i></label>
+                            <input type="text" class="form-control" ng-model="smsValues.smsRemark" placeholder="" name="">
+                              </div> -->
+                              <div class="col-sm-6 mb-3">
+                                <label for="" class="form-label">SMS Remark <i class="fa fa-info pull-right bg-gray-active thumbnail mb-0" data-bs-toggle="tooltip" title="Slab"></i></label>
+                            <input type="text" class="form-control" ng-model="smsValues.smsRemark" placeholder="" name="">
+                              </div>
+                            </div>
+                       
+                        <!-- <div class="form-group">
+                            <label>Remarks</label>
+                            <textarea class="form-control" ng-model="sms.remarks" id="remarks" name="remarks" rows="2"
+                                placeholder="Describe What You Have Done Today..."></textarea>
+                        </div> -->
+
+                        <button type="submit" ng-click="saveSmsData()" class="btn btn-success save-btn">Save as Draft</button>
+                        
+                        <button type="button" class="btn btn-secondary" ng-click="reSetSmsData()" data-dismiss="modal">Close</button>
+                    </form>
+
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--view- modal-->
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Chemical Composition</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                            <tr>
+                                <th class="text-center">Material</th>
+                                <th>Min</th>
+                                <!-- <th>Item Code</th>
+                                <th>Actual</th> -->
+                                <th>Max</th>
+                                <!-- <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th> -->
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                           <tr>
+                                <th class="text-center">C</th>
+                                <td ><input required readonly ng-model="qualityRequestDto.compositionList[0].min" type="text" class="form-control"></td>
+                                <!-- <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].itemCode" id="#" value=""></td>
+                                <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].actual" id="#" value=""></td> -->
+                                <td ><input required readonly ng-model="qualityRequestDto.compositionList[0].max" type="text" class="form-control"></td>
+                                <!-- <td style="width: 100px;"><input required ng-model="qualityRequestDto.compositionList[0].ceq" type="text" class="form-control"></td>
+                                <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].leanChemGrade" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">Mn</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].min" readonly type="text" class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[1].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[1].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th  class="text-center">Si</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[2].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[2].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th  class="text-center">Cr</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].min" readonly type="text" class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[3].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[3].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">V</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[4].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[4].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">Nb</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[5].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[5].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th  class="text-center">Ni</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[6].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[6].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th  class="text-center">Mo</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[7].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[7].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">Cu</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[8].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[8].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th  class="text-center">Ti</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[9].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].max" readonly  type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[9].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">Ca</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[10].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[10].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">Al</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[11].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[11].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[11].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[11].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[11].ceq" type="text" class="form-control"></td>
+                                <td><input required  ng-model="qualityRequestDto.compositionList[11].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">B</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].min" readonly type="text" class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[12].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[12].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th  class="text-center">P</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[13].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[13].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th class="text-center">N</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[14].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[14].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <!-- <tr>
+                                <th ng-init="qualityRequestDto.compositionList[15].material='C Eq'" class="text-center">C Eq</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].min" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].actual" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].max" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].leanChemGrade" class="form-control" id="#" value=""></td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>            
+                                 
+              </form>
+              <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">SMS Entry Details</h5>
+                </button>
+                </div>
+              <div class="modal-body">
+              <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                            <tr>
+                                <th>Slab/Billet</th>
+                                <th>External Grade</th>
+                                <th>Internal Grade</th>
+                                <th>Segment</th>
+                                <th>Sub Segment</th>
+                                <th>Process Route</th>
+                                <th>Coke, Petroleum Calcined, 25KG Pack</th>
+                                <th>Graphite Fines</th>
+                                <th>Silico Manganese, HP, 20-60MM</th>
+                                <th>Silico Manganes, Extra Low C, 10-55MM</th>
+                                <th>Silico Manganese, Low Phos</th>
+                                <th>Manganese Metal Briqutes</th>
+                                <th>Ferro Manganese, HC</th>
+                                <th>Ferro Manganses, LC</th>
+                                <th>Ferro Silicon</th>
+                                <th>Aluminium Dross</th>
+                                <th>Ingot, AL, Purity: 99.5%</th>
+                                <th>Wire, AL, DIA:12-13MM</th>
+                                <th>Wire, 16MM,CA-SI</th>
+                                <th>Ca Wire, Pure</th>
+                                <th>Copper Cathode, CU Content, 97-99% Pure</th>
+                                <th>Nickel Metal</th>
+                                <th>Ferro Chrome,LC</th>
+                                <th>Ferro Chrome, CR: 60T065%</th>
+                                <th>Ferro Niobium</th>
+                                <th>Wire, FE-TI Cored, 13MM, TI 65% Min</th>
+                                <th>Ferro Vanadium</th>
+                                <th>Nitrovan</th>
+                                <th>Ferro Molybdenum</th>
+                                <th>Ferro Boron</th>
+                                <th>Shots Aluminium</th>
+                                <th>Ferro Aluminium</th>
+                                <th>Ferro Phosphorous</th>
+                                <th>Ferro TITANIUM</th>
+                                <th>SYN Slag Pre Melted</th>
+                                <th>Slag Fluidiser</th>
+                                <th>Wire 13MM,CA-FE</th>
+                                <th>AL Cubes</th>
+                                <th>Calcined Lime</th>
+                                <th>Manganese Core Wire, Nitrided, 13MM</th>
+                                <th>Total Alloy Cost per Ton</th>
+                                <!-- <th>Quality Remark</th> -->
+                                <th> SMS Remark</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                    <td>{{smsProduct}}</td>
+                                    <td>{{smsGrade}}</td>
+                                    <td>{{smsInternalGrade}}</td>
+                                    <td>{{smsValues.segment}}</td>
+                                    <td>{{smsValues.subSegment}}</td>
+                                    <td>{{smsValues.processRoute}}</td>
+                                    <td>{{smsValues.cokePetroleumCalcined}}</td>
+                                    <td>{{smsValues.graphiteFines}}</td>
+                                    <td>{{smsValues.silicoManganeseHP}}</td>
+                                    <td>{{smsValues.silicoManganesExtraLowC}}</td>
+                                    <td>{{smsValues.silicoManganeseLowPhos}}</td>
+                                    <td>{{smsValues.manganeseMetalBriqutes}}</td>
+                                    <td>{{smsValues.ferroManganeseHC}}</td>
+                                    <td>{{smsValues.ferroMangansesLC}}</td>
+                                    <td>{{smsValues.ferroSilicon}}</td>
+                                    <td>{{smsValues.aluminiumDross}}</td>
+                                    <td>{{smsValues.ingotAL}}</td>
+                                    <td>{{smsValues.wireAL}}</td>
+                                    <td>{{smsValues.wire16MM}}</td>
+                                    <td>{{smsValues.caWirePure}}</td>
+                                    <td>{{smsValues.copperCathode}}</td>
+                                    <td>{{smsValues.nickelMetal}}</td>
+                                    <td>{{smsValues.ferroChromeLC}}</td>
+                                    <td>{{smsValues.ferroChromeCR}}</td>
+                                    <td>{{smsValues.ferroNiobium}}</td>
+                                    <td>{{smsValues.wireFETICored}}</td>
+                                    <td>{{smsValues.ferroVanadium}}</td>
+                                    <td>{{smsValues.nitrovan}}</td>
+                                    <td>{{smsValues.ferroMolybdenum}}</td>
+                                    <td>{{smsValues.ferroBoron}}</td>
+                                    <td>{{smsValues.shotsAluminium}}</td>
+                                    <td>{{smsValues.ferroAluminium}}</td>
+                                    <td>{{smsValues.ferroPhosphorous}}</td>
+                                    <td>{{smsValues.ferroTitaninum}}</td>
+                                    <td>{{smsValues.synSlagPreMelted}}</td>
+                                    <td>{{smsValues.slagFluidiser}}</td>
+                                    <td>{{smsValues.wire13MM}}</td>
+                                    <td>{{smsValues.alCubes}}</td>
+                                    <td>{{smsValues.calcinedLime}}</td>
+                                    <td>{{smsValues.manganeseCoreWire}}</td>
+                                    <td>{{smsValues.totalAlloyCostPerTon}}</td>
+                                    <!-- <td></td> -->
+                                    <td style="width: 200px;">{{smsValues.smsRemark}}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>            
+                <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">Close</button>                  
+              </form>
+              </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+    <!---login script-->
+    <!---search select dropeown list--js-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <!---search select dropeown list--js-->
+    <script>
+        $('.selectpicker').selectpicker({
+            style: 'btn-1'
+        });
+    </script>
+    <!---end js--->
+</body>
+
+
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ferro Alloy</title>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--datatable-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" />
+	<!-- <script src="https://rawgit.com/michaelbromley/angularUtils-pagination/master/dirPagination.js"></script> -->
+    <link href="dist/css/style.css" rel="stylesheet" type="stylesheet" />
+
+    <!--font-awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!---search select dropeown list--->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link href="themify-icons/themify-icons.css" rel="stylesheet" type="text/css" />
+    <link href="dist/css/style.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!---search select dropeown list end--->
+    
+    <!-- Angularjs  -->
+    <script th:replace="fragments :: angularJsCommonFile"></script>
+	<!-- Controllers And services -->
+	<script th:src="@{/angular/controllers/app.js}" ></script>
+		  <script th:src="@{/angular/services/authInterceptorService.js}" ></script>
+	<script th:src="@{/angular/services/authService.js}" ></script>  
+	 <script th:src="@{/angular/controllers/qualityController.js}" ></script>
+	 <script th:src="@{/angular/services/qualityService.js}" ></script>   
+  
+    <style>
+    #searchResult{
+  list-style: none;
+  padding: 0px;
+  width: 280px;
+  position: absolute;
+  margin: 0;
+  z-index: 2;
+    top: 40px;
+}
+
+#searchResult li{
+  background: lavender;
+  padding: 4px;
+  margin-bottom: 4px;
+}
+
+#searchResult li:nth-child(even){
+  background: cadetblue;
+  color: white;
+}
+
+#searchResult li:hover{
+  cursor: pointer;
+}
+#gradeId {
+	margin:5px;
+	padding: 5px;
+    width: 280px;
+    letter-spacing: 1px;
+}
+ /* input[type=text]{
+  padding: 5px;
+  width: 355px;
+  letter-spacing: 1px;
+}  */
+
+#searchResult1{
+  list-style: none;
+  padding: 0px;
+  width: 280px;
+  position: absolute;
+  margin: 0;
+  z-index: 2;
+    top: 40px;
+}
+
+#searchResult1 li{
+  background: lavender;
+  padding: 4px;
+  margin-bottom: 4px;
+}
+
+#searchResult1 li:nth-child(even){
+  background: cadetblue;
+  color: white;
+}
+
+#searchResult1 li:hover{
+  cursor: pointer;
+}
+    </style>
+
+</head>
+
+<body ng-app="app" ng-controller="qualityController" ng-init="init()">
+    <nav class="navbar navbar-light bg-light shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand"><img th:src="@{/angular/img/j-panther-logo.png}" width="100px;"></a>
+            <form class="d-flex">
+                <a  ng-click="logout()" href=""><i class="fa fa-sign-out" aria-hidden="true"></i> Sign out</a>
+            </form>
+        </div>
+    </nav>
+    <!--navbar end-->
+    <section class="bg-dark">
+        <div class="container-fluid bg-primar py-3 text-white" th:style="'height: 50px; background-image: url(\'' + ${contextPath + '/angular/img/6928.jpg'} + '\'); background-size: cover; position: relative;  background-repeat: no-repeat; background-position: top;'">
+            <h5>Quality</h5>
+        </div>
+
+        <!--sub-banner-->
+        <div class="container-fluid py-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content px-3 border bg-light" id="nav-tabContent">
+                        <div class="tab-pane fade active show" id="nav-quality" role="tabpanel"
+                            aria-labelledby="nav-home-tab">
+                            <div class="box-body row bg-dark pt-3">
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <input  type="text" ng-model="productName" placeholder="Product" class="form-control selectpicker" data-live-search="true"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <input type="text" ng-model="gradeName" placeholder="Grade" class="form-control selectpicker" data-live-search="true"/>
+                                    </div> 
+                                    
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group search_select_box">
+                                        <input  type="text" ng-model="internalGradename" placeholder="Internal grade" class="form-control selectpicker" data-live-search="true"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-3"> <a ng-click="getProductList(1,null,productName,gradeName,internalGradename)" ><span class="btn btn-primary"><i class="fa fa-search"
+                                   aria-hidden="true"></i> Search</span></a>
+                                </div>
+                            </div>
+
+                            <!--table-->
+                            <div class="d-flex bd-highlight bg-info my-3 p-2">
+                                <div class="flex-grow-1 bd-highlight pt-2"><h5>Quality</h5></div>
+                                <div class="bd-highlight"><a href="#" data-toggle="modal" data-target="#newModal"><button type="button" ng-click="clearFields()" class="btn btn-warning">Create New <i class="fa fa-pencil" aria-hidden="true"></i></button></a>
+                                       </div>
+                              </div>
+
+                            <div class="table-responsive">                                
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th >Sr.No.</th>
+                                            
+                                            <th>Products Name</th>
+                                            <th>External Grade</th>
+                                            <th>Internal Grade</th>
+                                            <th>Remarks</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Action</th>   
+                                        </tr>
+                                    </thead>
+
+                                    <tbody >
+                                        <tr dir-paginate="d in data | itemsPerPage: 4 "  total-items="totalPages" current-page="currentPage" ng-init="pindex=$index" pagination-id="productPagination">
+                                            <td>{{ ($index + 1) + (currentPage - 1) * 4}}</td>
+                                            <td>{{d.product}}</td>
+                                            <td>{{d.externalGrade}}</td>
+                                            <td>{{d.internalGrade}}</td>
+                                            <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;">{{d.remarks}}</td>
+                                            <td>{{d.status}}</td>
+                                            <td style="width: 140px;"> 
+                                                <div class="ms-auto text-center">
+                                                    <a class="btn btn-link text-dark text-gradient px-2 py-0 mb-0" ng-click="fatchRequestById(d.id)"  data-toggle="modal" data-target="#newModal" style="border: 1px solid;"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></i></a>                        
+                                                    <a class="btn btn-link text-primary px-2 py-0 mb-0" ng-click="fatchRequestById(d.id)"style="border: 1px solid;" data-toggle="modal" data-target="#viewModal"><i class="fa fa-eye fa-1x" aria-hidden="true"></i></a>
+                                               		<a   href="Ferro-Alloy/qualityHistory/{{d.id}}" ><button type="button" class="btn btn-dark">History <i class="fa fa-history" aria-hidden="true"></i></button></a>
+                            
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <dir-pagination-controls on-page-change="getProductList(newPageNumber)" direction-links="true" boundary-links="true"  pagination-id="productPagination" ></dir-pagination-controls>
+                            </div>
+                        </div>
+                        <!--finance-->
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!---footer-->
+        <footer>
+            <div class="container-fluid mt-4" style="background-color: #fc9e2f">
+                <div class="container">
+                    <div class="row text-dark text-center">
+                        <span class="align-middle py-2">© Jindal Steel & Power Limited</span>
+                    </div>
+                </div>
+        </footer>
+    </section>
+
+<!--new create modal-->
+<div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="newModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Create New</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form ng-submit="saveProduct()"><!-- ng-submit="saveProduct()" -->
+                <div class="form-group row" style="border: 0px solid;"> 
+                        <div class="col-md-3">
+                            <div class="form-group search_select_box">
+                                <!-- <select id='gradeId' ng-model="qualityRequestDto.product" class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Product Group</option>
+                                    <option>Slab</option>
+                                </select> -->
+                                <input id='gradeId' ng-required="true" ng-model="qualityRequestDto.product" type='text' placeholder='Type product name..' >
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- <div class="form-group search_select_box"> -->
+                                <!-- <select ng-model="qualityRequestDto.externalGrade" class="form-control selectpicker" data-live-search="true">
+                                    <option>Select External Grade</option>
+                                    <option>Rock Hard 450-</option>
+                                </select> -->
+                               <div class="form-group search_select_box"  ng-click='containerClicked();' >
+ 
+					    <input id='gradeId' ng-required="true" type='text'  
+					          ng-keyup='fetchMasterGrade(qualityRequestDto.externalGrade,index)' 
+					          ng-click='searchboxClicked($event);' 
+					          ng-model='qualityRequestDto.externalGrade' 
+					          
+					          placeholder='Type grade name..'><br>
+					    <ul id='searchResult' >
+					      <li ng-click='setValue($index ,$event)' 
+					          ng-repeat="result in searchResult track by $index" >
+					          {{ result.gradeFamily }} 
+					      </li>
+					    </ul>
+					  </div>
+                            <!-- </div> -->
+                        </div>
+                        <div class="col-md-3">
+                            <!-- <div class="form-group search_select_box">
+                                <select id='gradeId' ng-model="qualityRequestDto.internalGrade" class="form-control selectpicker" data-live-search="true">
+                                    <option>Select Internal Grade</option>
+                                    <option>JARH45XLO1</option>
+                                </select>
+                            </div> -->
+                            <div class="form-group search_select_box"  ng-click='containerClicked1();' >
+ 
+					    <input id='gradeId' ng-required="true" type='text'  
+					          ng-keyup='fetchMasterInternalGrade(qualityRequestDto.internalGrade,index)' 
+					          ng-click='searchboxClicked1($event);' 
+					          ng-model='qualityRequestDto.internalGrade' 
+					          
+					          placeholder='Type internal grade name..'><br>
+					    <ul id='searchResult1' >
+					      <li ng-click='setValue1($index ,$event)' 
+					          ng-repeat="result in searchResult1 track by $index" >
+					          {{ result.intGradeName }} 
+					      </li>
+					    </ul>
+					  </div>
+                        </div>
+                        <!-- <div class="col-md-3"> <a href="#"><span class="btn btn-primary"><i class="fa fa-search"
+                           aria-hidden="true"></i> Search</span></a>
+                        </div> -->
+                    <div class="table-responsive py-2">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <thead class="header">
+                                    <th colspan="12">Chemical Composition</th>
+                                </thead>
+                            </tr>
+                            <tr>
+                                <th colspan="4">Material</th>
+                                <th colspan="4">Min</th>
+                                <!-- <th>Item Code</th> -->
+                               <!--  <th>Actual</th> -->
+                                <th colspan="4">Max</th>
+                             <!--    <th>C Eq</th>
+                                <th>Lean Chemistry Grades</th> -->
+                                
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th colspan="4"  class="text-center" >C</th>
+                                <td colspan="4" ><input required ng-model="qualityRequestDto.compositionList[0].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].itemCode" id="#" value=""></td>
+                                <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].actual" id="#" value=""></td> -->
+                                <td colspan="4" ><input required ng-model="qualityRequestDto.compositionList[0].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td style="width: 100px;"><input required ng-model="qualityRequestDto.compositionList[0].ceq" type="text" class="form-control"></td>
+                                <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].leanChemGrade" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th colspan="4"  class="text-center">Mn</th>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[1].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[1].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[1].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[1].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Si</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[2].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[2].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[2].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[2].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Cr</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[3].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[3].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[3].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[3].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td  colspan="4"  class="text-center">V</td>
+                                <td colspan="4" ><input required ng-model="qualityRequestDto.compositionList[4].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[4].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[4].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[4].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Nb</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[5].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[5].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[5].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[5].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Ni</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[6].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[6].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[6].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[6].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"   class="text-center">Mo</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[7].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[7].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[7].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[7].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-center">Cu</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[8].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[8].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[8].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[8].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Ti</th>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[9].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[9].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[9].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[9].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Ca</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[10].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[10].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[10].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[10].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">Al</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[11].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[11].itemCode" class="form-control" id="#" value=""></td>
+                                <td ><input required ng-model="qualityRequestDto.compositionList[11].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[11].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[11].ceq" type="text" class="form-control"></td>
+                                <td><input required  ng-model="qualityRequestDto.compositionList[11].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"   class="text-center">B</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[12].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[12].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[12].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[12].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">P</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[13].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[13].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[13].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[13].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <td colspan="4"  class="text-center">N</td>
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[14].min" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[14].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].actual" class="form-control" id="#" value=""></td> -->
+                                <td colspan="4"><input required ng-model="qualityRequestDto.compositionList[14].max" id="decimalInput" type="text" decimal-input class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[14].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <!-- <tr>
+                                <th ng-init="qualityRequestDto.compositionList[15].material='C Eq'" class="text-center">C Eq</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].min" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].actual" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].max" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].leanChemGrade" class="form-control" id="#" value=""></td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>                              
+                </div>
+                                
+                <div class="form-group">
+                  <label>Remarks</label>
+                  <textarea class="form-control" ng-model="qualityRequestDto.remarks" id="remarks" name="remarks" rows="2" placeholder="Remarks..."></textarea>
+                  
+                </div>                 
+                <button type="button" ng-click="setStatusValue(1)" class="btn btn-primary  save-btn">Save as Draft</button> 
+                <button type="submit" ng-click="setStatusValue(2)" class="btn btn-success save-btn">Submit</button>                       
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                  
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Chemical Composition</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group row" style="border: 0px solid;"> 
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="bg-info">
+                            <tr>
+                                <th class="text-center">Material</th>
+                                <th>Min</th>
+                               <!--  <th>Item Code</th>
+                                <th>Actual</th> -->
+                                <th>Max</th>
+                               <!--  <th>C Eq</th> -->
+                                <!-- <th>Lean Chemistry Grades</th> -->
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                           <tr>
+                                <th ng-init="qualityRequestDto.compositionList[0].material='C'" class="text-center" style="padding: 0px;">C</td>
+                                <td style="width: 100px;"><input required readonly ng-model="qualityRequestDto.compositionList[0].min" type="text" class="form-control"></td>
+                                <!-- <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].itemCode" id="#" value=""></td>
+                                <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].actual" id="#" value=""></td> -->
+                                <td style="width: 100px;"><input required readonly ng-model="qualityRequestDto.compositionList[0].max" type="text" class="form-control"></td>
+                                <!-- <td style="width: 100px;"><input required ng-model="qualityRequestDto.compositionList[0].ceq" type="text" class="form-control"></td>
+                                <td><input class="form-control" required ng-model="qualityRequestDto.compositionList[0].leanChemGrade" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[1].material='Mn'" class="text-center">Mn</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].min" readonly type="text" class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[1].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[1].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[1].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[2].material='Si'" class="text-center">Si</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[2].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[2].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[2].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[3].material='Cr'" class="text-center">Cr</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].min" readonly type="text" class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[3].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[3].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[3].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[4].material='V'" class="text-center">V</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[4].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[4].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[4].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[5].material='Nb'" class="text-center">Nb</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[5].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[5].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[5].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[6].material='Ni'" class="text-center">Ni</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[6].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[6].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[6].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[7].material='Mo'" class="text-center">Mo</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[7].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[7].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[7].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[8].material='Cu'"class="text-center">Cu</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[8].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[8].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[8].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[9].material='Ti'" class="text-center">Ti</th>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[9].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].max" readonly  type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[9].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[9].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[10].material='Ca'" class="text-center">Ca</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[10].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[10].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[10].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[11].material='Al'" class="text-center">Al</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[11].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[11].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[11].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[11].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[11].ceq" type="text" class="form-control"></td>
+                                <td><input required  ng-model="qualityRequestDto.compositionList[11].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[12].material='B'" class="text-center">B</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].min" readonly type="text" class="form-control"></td>
+                               <!--  <td><input required ng-model="qualityRequestDto.compositionList[12].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[12].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[12].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[13].material='P'" class="text-center">P</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[13].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[13].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[13].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <tr>
+                                <th ng-init="qualityRequestDto.compositionList[14].material='N'" class="text-center">N</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].min" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[14].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].actual" class="form-control" id="#" value=""></td> -->
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].max" readonly type="text" class="form-control"></td>
+                                <!-- <td><input required ng-model="qualityRequestDto.compositionList[14].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[14].leanChemGrade" class="form-control" id="#" value=""></td> -->
+                            </tr>
+                            <!-- <tr>
+                                <th ng-init="qualityRequestDto.compositionList[15].material='C Eq'" class="text-center">C Eq</td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].min" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].itemCode" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].actual" class="form-control" id="#" value=""></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].max" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].ceq" type="text" class="form-control"></td>
+                                <td><input required ng-model="qualityRequestDto.compositionList[15].leanChemGrade" class="form-control" id="#" value=""></td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>                                  
+                </div>            
+                <!-- <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-dark ml-2">Download Excel <i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                </div>                   -->
+              </form>               
+        </div>
+    </div>
+    </div>
+</div>
+
+    <!---login script-->
+    <!---search select dropeown list--js-->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+    <script>
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <!---search select dropeown list--js-->
+    <script>
+        $('.selectpicker').selectpicker({
+            style: 'btn-1'
+        });
+    </script>
+    <!---end js--->
+</body>
+
+</html>
