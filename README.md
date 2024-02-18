@@ -1,5 +1,5 @@
 # Ferro-Alloy-Management-Service
-An efficient management system for ferro alloy operations, integrating Spring Boot, JWT authentication, Hibernate ORM with MySQL, Thymeleaf templating, and AngularJS. Streamline your processes securely and seamlessly.
+An efficient management system for ferro alloy operations, **integrating Spring Boot, JWT authentication, Hibernate ORM with MySQL, Thymeleaf templating, and AngularJS.** Streamline your processes securely and seamlessly.
 
 Welcome to the Ferro Alloy Management Application, a robust system designed to streamline the management of ferro alloy operations. Leveraging cutting-edge technologies, this application offers a comprehensive solution for handling the intricate processes involved in the ferro alloy industry.
 
